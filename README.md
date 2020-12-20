@@ -54,6 +54,16 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqggOTJ08kwdo9DxnySy7ubozXl8G5
 ## 使用予定 Gem
 
 - devise
+- webpacker
+- bcrypt
+- bootstrap
+- jquery-rails
+- rspec-rails
+- factory_bot_rails
+- spring-commands-rspec
+- faker
+- launchy
+- webdrivers
 
 ## 使用予定の技術
 
