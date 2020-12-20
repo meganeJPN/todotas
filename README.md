@@ -54,3 +54,14 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqggOTJ08kwdo9DxnySy7ubozXl8G5
 ## 使用予定 Gem
 
 - devise
+
+## 使用予定の技術
+
+### ● カリキュラム内
+
+- AWS
+- devise
+
+### ● カリキュラム外
+
+- Vue.js
