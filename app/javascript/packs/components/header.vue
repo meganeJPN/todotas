@@ -5,24 +5,20 @@
       <nav>
         <div class="nav-wrapper container">
           <a href="/" class="brand-logo left">Todo Application</a>
-          <!--ハンバーガーメニューの開くアイコン-->
           <a href="#" class="sidenav-trigger right" data-target="mobile-links">
             <i class="material-icons">menu</i>
           </a>
-
           <div class="menu">
             <ul class="right hide-on-med-and-down">
               <li>
-                <a href="#" class="grey-text text-lighten-3">Contents1</a>
+                <router-link to="/" class="grey-text text-lighten-3"
+                  >Top</router-link
+                >
               </li>
               <li>
-                <a href="#" class="grey-text text-lighten-3">Contents2</a>
-              </li>
-              <li>
-                <a href="#" class="grey-text text-lighten-3">Contents3</a>
-              </li>
-              <li>
-                <a href="#" class="grey-text text-lighten-3">Contents4</a>
+                <router-link to="/user" class="grey-text text-lighten-3"
+                  >ユーザー情報</router-link
+                >
               </li>
             </ul>
           </div>
@@ -35,12 +31,15 @@
       <a href="#" class="sidenav-close " data-target="mobile-links">
         <i class="material-icons close-icon">close</i>
       </a>
-
       <div class="menu">
-        <li><a href="#">Contents1</a></li>
-        <li><a href="#">Contents2</a></li>
-        <li><a href="#">Contents3</a></li>
-        <li><a href="#">Contents4</a></li>
+        <li>
+          <router-link to="/">Top</router-link>
+        </li>
+        <li>
+          <router-link to="/user""
+            >ユーザー情報</router-link
+          >
+        </li>
       </div>
     </ul>
   </div>
