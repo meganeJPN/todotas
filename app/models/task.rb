@@ -1,3 +1,4 @@
 class Task < ApplicationRecord
-  validates :name, presence: true
+  validates :content, presence: true
+  validates :duration, presence: true
 end
