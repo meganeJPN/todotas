@@ -64,6 +64,7 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqggOTJ08kwdo9DxnySy7ubozXl8G5
 - faker
 - launchy
 - webdrivers
+- foreman
 
 ## 使用予定の技術
 
