@@ -1,27 +1,47 @@
 <template>
   <div>
-    <nav class="navbar navbar-dark bg-dark">
-      <a href="#" class="navbar-brand">todotas</a>
-      <div class="dropdown">
-        <button
-          type="button"
-          id="dropdownMenuButton"
-          class="btn btn-secondary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          ユーザー名
-        </button>
-        <div
-          class="dropdown-menu"
-          aria-labelledby="dropdownMenuButton"
-          style="z-index:9999"
-        >
-          <a class="dropdown-item" href="#">ユーザ情報</a>
-          <a class="dropdown-item" href="#">ログアウト</a>
+    <!-- Dropdown Structure -->
+    <div class=" navbar-fixed">
+      <nav>
+        <div class="nav-wrapper container">
+          <a href="/" class="brand-logo left">Todo Application</a>
+          <!--ハンバーガーメニューの開くアイコン-->
+          <a href="#" class="sidenav-trigger right" data-target="mobile-links">
+            <i class="material-icons">menu</i>
+          </a>
+
+          <div class="menu">
+            <ul class="right hide-on-med-and-down">
+              <li>
+                <a href="#" class="grey-text text-lighten-3">Contents1</a>
+              </li>
+              <li>
+                <a href="#" class="grey-text text-lighten-3">Contents2</a>
+              </li>
+              <li>
+                <a href="#" class="grey-text text-lighten-3">Contents3</a>
+              </li>
+              <li>
+                <a href="#" class="grey-text text-lighten-3">Contents4</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </nav>
+    </div>
+
+    <ul class="sidenav" id="mobile-links">
+      <!--ハンバーガーメニューの閉じるアイコン-->
+      <a href="#" class="sidenav-close " data-target="mobile-links">
+        <i class="material-icons close-icon">close</i>
+      </a>
+
+      <div class="menu">
+        <li><a href="#">Contents1</a></li>
+        <li><a href="#">Contents2</a></li>
+        <li><a href="#">Contents3</a></li>
+        <li><a href="#">Contents4</a></li>
       </div>
-    </nav>
+    </ul>
   </div>
 </template>

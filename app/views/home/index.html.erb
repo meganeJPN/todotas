@@ -3,3 +3,17 @@
 </div>
 
 <%= javascript_pack_tag 'todotas' %>
+<script type="text/javascript">
+  $(document).ready(function(){
+  $('.dropdown-trigger').dropdown({
+      coverTrigger:false
+    }
+  );
+})
+
+ $(document).ready(function () {
+      $('.sidenav').sidenav({
+        edge: 'right',
+      });
+    })
+</script>
