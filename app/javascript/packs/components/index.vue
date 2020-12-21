@@ -15,13 +15,19 @@
     <div>
       <ul class="collection">
         <li
-          v-for="task in tasks"
-          v-if="!task.completed"
           v-bind:id="'row_task_' + task.id"
           class="collection-item"
+          v-for="task in tasks"
+          v-if="!task.completed"
         >
-          <input type="checkbox" v-bind:id="'task_' + task.id" />
-          <label v-bind:for="'task_' + task.id">{{ task.content }}</label>
+          <a
+            class="waves-effect waves-light modal-trigger display-block"
+            href="#modal1"
+          >
+            <span v-bind:for="'task_' + task.id" class="word-color-black">
+              {{ task.content }}
+            </span></a
+          >
         </li>
       </ul>
     </div>
@@ -135,6 +141,28 @@ export default {
           }
         );
     },
+    doneTask: function(task_id) {
+      axios.put('/api/tasks/' + task_id, { task: { completed: true } }).then(
+        (response) => {
+          this.moveFinishedTask(task_id);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+    moveFinishedTask: function(task_id) {
+      var el = document.querySelector('#row_task_' + task_id);
+      var el_clone = el.cloneNode(true);
+      el.classList.add('display_none');
+      el_clone.getElementsByTagName('input')[0].checked = 'checked';
+      el_clone.getElementsByTagName('label')[0].classList.add('line-through');
+      el_clone
+        .getElementsByTagName('label')[0]
+        .classList.remove('word-color-black');
+      var li = document.querySelector('#finished-tasks > ul > li:first-child');
+      document.querySelector('#finished-tasks > ul').insertBefore(el_clone, li);
+    },
   },
 };
 </script>
@@ -147,5 +175,8 @@ export default {
 }
 .line-through {
   text-decoration: line-through;
+}
+.display-block {
+  display: block;
 }
 </style>
