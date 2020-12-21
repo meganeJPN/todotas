@@ -27,6 +27,10 @@ class Api::TasksController < ApplicationController
     end
   end
 
+  def show
+    @task = Task.find(params[:id])
+  end
+
   private
   def task_params
     params.fetch(:task, {}).permit(:content, :comment, :duration, :completed)
