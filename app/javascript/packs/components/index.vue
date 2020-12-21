@@ -3,10 +3,17 @@
     <!-- 新規作成部分 -->
     <div class="row">
       <div class="col s10 m11">
-        <input class="form-control" placeholder="Add your task!!" />
+        <input
+          v-model="newTask"
+          class="form-control"
+          placeholder="Add your task!!"
+        />
       </div>
       <div class="col s2 m1">
-        <div class="btn-floating waves-effect waves-light red">
+        <div
+          v-on:click="createTask"
+          class="btn-floating waves-effect waves-light red"
+        >
           <i class="material-icons">add</i>
         </div>
       </div>
@@ -26,7 +33,9 @@
       </ul>
     </div>
     <!-- 完了済みタスク表示ボタン -->
-    <div class="btn">Display finished tasks</div>
+    <div class="btn" v-on:click="displayFinishedTasks">
+      Display finished tasks
+    </div>
     <!-- 完了済みタスク一覧 -->
     <div id="finished-tasks" class="display_none">
       <ul class="collection">
@@ -76,6 +85,34 @@ export default {
         }
       );
     },
+    displayFinishedTasks: function() {
+      document
+        .querySelector('#finished-tasks')
+        .classList.toggle('display_none');
+    },
+    createTask: function() {
+      if (!this.newTask) return;
+      axios.post('/api/tasks', { task: { content: this.newTask } }).then(
+        (resonse) => {
+          this.tasks.unshift(response.data.task);
+          this.newTask = '';
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
   },
 };
 </script>
+<style scoped>
+[v-cloak] {
+  display: none;
+}
+.display_none {
+  display: none;
+}
+.line-through {
+  text-decoration: line-through;
+}
+</style>
