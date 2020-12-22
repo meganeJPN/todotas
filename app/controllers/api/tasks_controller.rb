@@ -1,5 +1,6 @@
 class Api::TasksController < ApplicationController
   protect_from_forgery
+  before_action :set_task, only: [:show, :update, :destroy]
 
   # GET /tasks
   def index
@@ -19,7 +20,6 @@ class Api::TasksController < ApplicationController
 
   # PATCH/PUT /tasks/1
   def update
-    @task = Task.find(params[:id])
     if @task.update(task_params)
       render :show, status: :ok
     else
@@ -31,8 +31,20 @@ class Api::TasksController < ApplicationController
     @task = Task.find(params[:id])
   end
 
+  def destroy
+    @task = Task.find(params[:id])
+    if @task.destroy 
+      render status: 200, json: {status: 200}
+    end
+
+
+  end
+
   private
   def task_params
     params.fetch(:task, {}).permit(:content, :comment, :duration, :completed)
+  end
+  def set_task
+    @task = Task.find(params[:id])
   end
 end
