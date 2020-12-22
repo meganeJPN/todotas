@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="schedule">
-      <table class="schedule-list">
+      <table class="schedule-list" border="1">
         <thead>
           <tr>
             <th></th>
@@ -68,9 +68,18 @@
         </thead>
         <tbody>
           <tr v-for="t in time_list" v-bind:id="t">
-            <td>{{ t }}</td>
+            <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
+              {{ t }}
+            </td>
             <td>Eclair</td>
-            <td>$0.87</td>
+            <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
+              <a
+                id="add-task"
+                class="btn-floating  waves-effect waves-light orange modal-trigger"
+                href="#createTaskModal"
+                ><i class="material-icons">add</i></a
+              >
+            </td>
           </tr>
         </tbody>
       </table>
@@ -218,6 +227,7 @@ export default {
       duration: '',
       completed: '',
       time_list: [
+        '0800',
         '0815',
         '0830',
         '0845',
@@ -450,5 +460,13 @@ export default {
 /* Chrome, Safari 対応 */
 .box::-webkit-scrollbar {
   display: none;
+}
+td.time {
+  vertical-align: top;
+  width: 80px;
+}
+td.assign {
+  text-align: center;
+  width: 80px;
 }
 </style>
