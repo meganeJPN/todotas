@@ -1,16 +1,5 @@
 <template>
   <div>
-    <!-- 新規作成部分 -->
-    <div class="row">
-      <div class="col s2 m1">
-        <div
-          v-on:click="createTask"
-          class="btn-floating waves-effect waves-light red"
-        >
-          <i class="material-icons">add</i>
-        </div>
-      </div>
-    </div>
     <!-- リスト表示部分 -->
     <div>
       <ul class="collection">
@@ -36,14 +25,6 @@
     <div class="btn" v-on:click="displayFinishedTasks">
       Display finished tasks
     </div>
-    <!-- 完了済みタスク一覧 -->
-
-    <!-- Modal Trigger -->
-    <a
-      class="waves-effect waves-light btn modal-trigger"
-      href="#createTaskModal"
-      >Modal</a
-    >
 
     <!-- タスク追加モーダル -->
     <div id="createTaskModal" class="modal">
@@ -74,7 +55,7 @@
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select id="dropdown_create" v-model="duration">
+                <select id="dropdown_create" v-model.number="duration">
                   <option value="15">15</option>
                   <option value="30">30</option>
                   <option value="45">45</option>
@@ -124,7 +105,7 @@
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select v-model="duration">
+                <select v-model.number="duration">
                   <option value="15">15</option>
                   <option value="30">30</option>
                   <option value="45">45</option>
