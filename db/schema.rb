@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_21_024501) do
+ActiveRecord::Schema.define(version: 2020_12_22_081101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "schedules", force: :cascade do |t|
+    t.date "start_date"
+    t.time "start_time"
+    t.time "end_time"
+    t.bigint "task_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_schedules_on_task_id"
+  end
 
   create_table "tasks", force: :cascade do |t|
     t.string "content", null: false
@@ -24,4 +34,5 @@ ActiveRecord::Schema.define(version: 2020_12_21_024501) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "schedules", "tasks"
 end
