@@ -32,7 +32,6 @@ class Api::TasksController < ApplicationController
   end
 
   def destroy
-    @task = Task.find(params[:id])
     if @task.destroy 
       render status: 200, json: {status: 200}
     end
