@@ -305,11 +305,14 @@ export default {
     },
     moveFinishedTask: function(task_id) {
       var el = document.querySelector('#row_task_' + task_id);
+      console.log('el');
+      console.log(el);
+      console.log(el.classList);
       var el_clone = el.cloneNode(true);
       el.classList.add('display_none');
-      el_clone.getElementsByTagName('label')[0].classList.add('line-through');
+      el_clone.getElementsByTagName('span')[0].classList.add('line-through');
       el_clone
-        .getElementsByTagName('label')[0]
+        .getElementsByTagName('span')[0]
         .classList.remove('word-color-black');
       var li = document.querySelector('#finished-tasks > ul > li:first-child');
       document.querySelector('#finished-tasks > ul').insertBefore(el_clone, li);
