@@ -57,6 +57,24 @@
         </div>
       </div>
     </div>
+    <div class="schedule">
+      <table class="schedule-list">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="t in time_list" v-bind:id="t">
+            <td>{{ t }}</td>
+            <td>Eclair</td>
+            <td>$0.87</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <!-- タスク追加モーダル -->
     <div id="createTaskModal" class="modal">
       <div class="modal-content">
@@ -199,6 +217,64 @@ export default {
       comment: '',
       duration: '',
       completed: '',
+      time_list: [
+        '0815',
+        '0830',
+        '0845',
+        '0900',
+        '0915',
+        '0930',
+        '0945',
+        '1000',
+        '1015',
+        '1030',
+        '1045',
+        '1100',
+        '1115',
+        '1130',
+        '1145',
+        '1200',
+        '1215',
+        '1230',
+        '1245',
+        '1300',
+        '1315',
+        '1330',
+        '1345',
+        '1400',
+        '1415',
+        '1430',
+        '1445',
+        '1500',
+        '1515',
+        '1530',
+        '1545',
+        '1600',
+        '1615',
+        '1630',
+        '1645',
+        '1700',
+        '1715',
+        '1730',
+        '1745',
+        '1800',
+        '1815',
+        '1830',
+        '1845',
+        '1900',
+        '1915',
+        '1930',
+        '1945',
+        '2000',
+        '2015',
+        '2030',
+        '2045',
+        '2100',
+        '2115',
+        '2130',
+        '2145',
+        '2200',
+      ],
     };
   },
   mounted: function() {
@@ -361,6 +437,16 @@ export default {
   /* Firefox 対応 */
   scrollbar-width: none;
 }
+
+.schedule {
+  height: 30vh;
+  overflow: scroll;
+  /* IE, Edge 対応 */
+  -ms-overflow-style: none;
+  /* Firefox 対応 */
+  scrollbar-width: none;
+}
+
 /* Chrome, Safari 対応 */
 .box::-webkit-scrollbar {
   display: none;
