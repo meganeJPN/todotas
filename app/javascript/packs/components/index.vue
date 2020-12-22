@@ -137,8 +137,8 @@
       </div>
       <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
-        <div v-on:click="createTask" class="waves-effect waves-light btn">
-          追加
+        <div v-on:click="updateTask(id)" class="waves-effect waves-light btn">
+          更新
         </div>
       </div>
     </div>
@@ -173,6 +173,7 @@ export default {
     return {
       tasks: [],
       task: {},
+      id: '',
       content: '',
       comment: '',
       duration: '',
@@ -231,6 +232,28 @@ export default {
         }
       );
     },
+    updateTask: function(task_id) {
+      if (!this.content || !this.duration) return;
+      axios
+        .put('/api/tasks/' + task_id, {
+          task: {
+            content: this.content,
+            comment: this.comment,
+            duration: this.duration,
+          },
+        })
+        .then(
+          (response) => {
+            this.tasks.unshift(response.data.task);
+            this.content = '';
+            this.comment = '';
+            this.duration = '';
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    },
     moveFinishedTask: function(task_id) {
       var el = document.querySelector('#row_task_' + task_id);
       var el_clone = el.cloneNode(true);
@@ -254,6 +277,7 @@ export default {
       axios.get('/api/tasks/' + task_id).then(
         (response) => {
           this.task = response.data.task;
+          this.id = this.task.id;
           this.content = this.task.content;
           this.comment = this.task.comment;
           this.duration = this.task.duration;
