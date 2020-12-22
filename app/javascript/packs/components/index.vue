@@ -56,7 +56,7 @@
                   id="input_text"
                   type="text"
                   data-length="10"
-                  v-model="newTask"
+                  v-model="content"
                 />
                 <label for="input_text">タスク内容</label>
               </div>
@@ -67,13 +67,14 @@
                   id="textarea2"
                   class="materialize-textarea"
                   data-length="120"
+                  v-model="comment"
                 ></textarea>
                 <label for="textarea2">コメント</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select v-model="duration">
+                <select id="dropdown_create" v-model="duration">
                   <option value="15">15</option>
                   <option value="30">30</option>
                   <option value="45">45</option>
@@ -105,7 +106,7 @@
                   value="this.task.content"
                   type="text"
                   data-length="10"
-                  v-model="newTask"
+                  v-model="content"
                 />
                 <label class="update-label" for="update_text">タスク内容</label>
               </div>
@@ -172,8 +173,8 @@ export default {
     return {
       tasks: [],
       task: {},
-      newTask: '',
-      commnet: '',
+      content: '',
+      comment: '',
       duration: '',
     };
   },
@@ -199,15 +200,19 @@ export default {
         .classList.toggle('display_none');
     },
     createTask: function() {
-      if (!this.newTask || !this.duration) return;
+      if (!this.content || !this.duration) return;
       axios
         .post('/api/tasks', {
-          task: { content: this.newTask, duration: this.duration },
+          task: {
+            content: this.content,
+            comment: this.comment,
+            duration: this.duration,
+          },
         })
         .then(
           (response) => {
             this.tasks.unshift(response.data.task);
-            this.newTask = '';
+            this.content = '';
             this.comment = '';
             this.duration = '';
           },
@@ -249,7 +254,7 @@ export default {
       axios.get('/api/tasks/' + task_id).then(
         (response) => {
           this.task = response.data.task;
-          this.newTask = this.task.content;
+          this.content = this.task.content;
           this.comment = this.task.comment;
           this.duration = this.task.duration;
           console.log(this.task);
