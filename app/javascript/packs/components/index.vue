@@ -67,7 +67,7 @@
                 <input
                   id="input_content"
                   type="text"
-                  data-length="10"
+                  data-length="50"
                   v-model="content"
                 />
                 <label for="input_content">タスク内容</label>
@@ -78,7 +78,7 @@
                 <textarea
                   id="input_comment"
                   class="materialize-textarea"
-                  data-length="120"
+                  data-length="400"
                   v-model="comment"
                 ></textarea>
                 <label for="input_comment">コメント</label>
@@ -90,7 +90,7 @@
                   id="input_duration"
                   type="number"
                   step="15"
-                  min="0"
+                  min="15"
                   max="120"
                   v-model.number="duration"
                 />
@@ -120,7 +120,7 @@
                   id="uppdate_conttent"
                   value="this.task.content"
                   type="text"
-                  data-length="10"
+                  data-length="50"
                   v-model="content"
                 />
                 <label class="update-label" for="update_content"
@@ -133,7 +133,7 @@
                 <textarea
                   id="update-comment"
                   class="materialize-textarea active"
-                  data-length="120"
+                  data-length="400"
                   v-model="comment"
                 ></textarea>
                 <label class="update-label" for="update-comment"
@@ -147,7 +147,7 @@
                   id="upate_duration"
                   type="number"
                   step="15"
-                  min="0"
+                  min="15"
                   max="120"
                   v-model.number="duration"
                   value="this.task.duration"
