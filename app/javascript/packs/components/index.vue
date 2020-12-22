@@ -5,39 +5,58 @@
       <div class="col s12">
         <ul class="tabs">
           <li class="tab col s3">
-            <a class="active" href="#working">Test 1</a>
+            <a class="active" href="#tab-working">作業中</a>
           </li>
-          <li class="tab col s3"><a href="#test2">Test 2</a></li>
+          <li class="tab col s3">
+            <a href="#tab-completed">完了</a>
+          </li>
         </ul>
       </div>
-      <div id="working" class="col s12">Test 1</div>
-      <div id="test2" class="col s12">Test 2</div>
+      <div id="tab-working" class="col s12">
+        <div>
+          <ul class="collection task-list">
+            <li
+              v-bind:id="'row_task_' + task.id"
+              class="collection-item"
+              v-for="task in tasks"
+              v-if="!task.completed"
+            >
+              <a
+                class="waves-effect waves-light modal-trigger display-block"
+                href="#showTaskModal"
+                v-on:click="showTask(task.id)"
+              >
+                <span v-bind:id="'task_' + task.id" class="word-color-black">
+                  {{ task.content }}
+                </span></a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-completed" class="col s12">
+        <div id="finished-tasks">
+          <ul class="collection task-list">
+            <li
+              v-for="task in tasks"
+              v-if="task.completed"
+              v-bind:id="'row_task_' + task.id"
+              class="collection-item"
+            >
+              <a
+                class="waves-effect waves-light modal-trigger display-block"
+                href="#showTaskModal"
+                v-on:click="showTask(task.id)"
+              >
+                <span v-bind:for="'task_' + task.id" class="line-through">
+                  {{ task.content }}
+                </span></a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div>
-      <ul class="collection">
-        <li
-          v-bind:id="'row_task_' + task.id"
-          class="collection-item"
-          v-for="task in tasks"
-          v-if="!task.completed"
-        >
-          <a
-            class="waves-effect waves-light modal-trigger display-block"
-            href="#showTaskModal"
-            v-on:click="showTask(task.id)"
-          >
-            <span v-bind:id="'task_' + task.id" class="word-color-black">
-              {{ task.content }}
-            </span></a
-          >
-        </li>
-      </ul>
-    </div>
-    <!-- 完了済みタスク表示ボタン -->
-    <div class="btn" v-on:click="displayFinishedTasks">
-      Display finished tasks
-    </div>
-
     <!-- タスク追加モーダル -->
     <div id="createTaskModal" class="modal">
       <div class="modal-content">
@@ -162,27 +181,6 @@
           完了
         </div>
       </div>
-    </div>
-
-    <div id="finished-tasks" class="display_none">
-      <ul class="collection">
-        <li
-          v-for="task in tasks"
-          v-if="task.completed"
-          v-bind:id="'row_task_' + task.id"
-          class="collection-item"
-        >
-          <a
-            class="waves-effect waves-light modal-trigger display-block"
-            href="#showTaskModal"
-            v-on:click="showTask(task.id)"
-          >
-            <span v-bind:for="'task_' + task.id" class="line-through">
-              {{ task.content }}
-            </span></a
-          >
-        </li>
-      </ul>
     </div>
   </div>
 </template>
@@ -354,5 +352,17 @@ export default {
 }
 .display-block {
   display: block;
+}
+.task-list {
+  height: 30vh;
+  overflow: scroll;
+  /* IE, Edge 対応 */
+  -ms-overflow-style: none;
+  /* Firefox 対応 */
+  scrollbar-width: none;
+}
+/* Chrome, Safari 対応 */
+.box::-webkit-scrollbar {
+  display: none;
 }
 </style>

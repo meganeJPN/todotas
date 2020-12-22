@@ -4,7 +4,7 @@
     <div class=" navbar-fixed">
       <nav>
         <div class="nav-wrapper container">
-          <a href="/" class="brand-logo left">Todo Application</a>
+          <a href="/" class="brand-logo left">todotas</a>
           <a href="#" class="sidenav-trigger right" data-target="mobile-links">
             <i class="material-icons">menu</i>
           </a>
