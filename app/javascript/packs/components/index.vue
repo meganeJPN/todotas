@@ -76,7 +76,8 @@
               <a
                 id="add-task"
                 class="btn-floating  waves-effect waves-light orange modal-trigger"
-                href="#createTaskModal"
+                href="#assignTaskModal"
+                v-on:click="assignTask(t)"
                 ><i class="material-icons">add</i></a
               >
             </td>
@@ -209,6 +210,47 @@
         </div>
       </div>
     </div>
+
+    <!-- タスクアサインモーダル -->
+    <div id="assignTaskModal" class="modal">
+      <div class="modal-content">
+        <div class="row">
+          <form class="col s12">
+            <p v-for="time in this.time_span">
+              <label>
+                <input name="group1" type="radio" />
+                <span>{{ time }}</span>
+              </label>
+            </p>
+            <div class="row">
+              <div class="input-field col s12">
+                <input
+                  id="upate_duration"
+                  type="number"
+                  step="15"
+                  min="15"
+                  max="120"
+                  v-model.number="duration"
+                  value="this.task.duration"
+                />
+                <label class="update-label" for="update-duration"
+                  >所要時間</label
+                >
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
+        <div
+          v-on:click="doneTask(id)"
+          class="waves-effect waves-light btn modal-close"
+        >
+          完了
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -226,6 +268,7 @@ export default {
       comment: '',
       duration: '',
       completed: '',
+      time_span: [],
       time_list: [
         '0800',
         '0815',
@@ -422,6 +465,18 @@ export default {
           console.log(error, response);
         }
       );
+    },
+    assignTask: function(base_time) {
+      console.log('時間は取得できていますか？');
+      console.log(base_time);
+      console.log(this.time_list);
+      let base_time_index = this.time_list.findIndex((i) => i === base_time);
+      console.log(base_time_index);
+      this.time_span = this.time_list.slice(
+        base_time_index,
+        base_time_index + 4
+      );
+      console.log(this.time_span);
     },
   },
 };
