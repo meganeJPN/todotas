@@ -2,7 +2,7 @@ class Api::SchedulesController < ApplicationController
   protect_from_forgery
   before_action :set_schedule, only: [:show, :update, :destroy]
   def index
-    @schedules = Schedule.all
+    @schedules = Schedule.where(start_date: params[:start_date])
   end
 
   def create
