@@ -16,10 +16,10 @@
         <div>
           <ul class="collection task-list">
             <li
+              v-for="task in tasks"
+              v-if="task.completed"
               v-bind:id="'row_task_' + task.id"
               class="collection-item"
-              v-for="task in tasks"
-              v-if="!task.completed"
             >
               <a
                 class="waves-effect waves-light modal-trigger display-block"
@@ -40,7 +40,7 @@
             <li
               v-for="task in tasks"
               v-if="task.completed"
-              v-bind:id="'row_task_' + task.id"
+              v-bind:id="'row_task_completed' + task.id"
               class="collection-item"
             >
               <a
@@ -57,6 +57,33 @@
         </div>
       </div>
     </div>
+    <div class="dateControl">
+      <div class="row">
+        <div class="col s12">
+          <a
+            id="next-day"
+            　class="btn waves-effect waves-light"
+            href="#!"
+            v-on:click="currentDateNext(current_date)"
+            ><i class="material-icons">navigate_before</i></a
+          >
+          <a
+            id="today"
+            class="btn waves-effect waves-light"
+            href="#!"
+            v-on:click="currentDateToday()"
+            >Today</a
+          >
+          <a
+            id="before-day"
+            class="btn waves-effect waves-light"
+            href="#!"
+            v-on:click="currentDateBefore(current_date)"
+            ><i class="material-icons">navigate_next</i></a
+          >
+        </div>
+      </div>
+    </div>
     <div class="schedule">
       <table class="schedule-list" border="1">
         <thead>
@@ -69,7 +96,7 @@
         <tbody>
           <tr v-for="t in time_list" v-bind:id="t">
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
-              {{ t }}
+              {{ strToTime(t) }}
             </td>
             <td>Eclair</td>
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
@@ -77,7 +104,7 @@
                 id="add-task"
                 class="btn-floating  waves-effect waves-light orange modal-trigger"
                 href="#assignTaskModal"
-                v-on:click="assignTask(t)"
+                v-on:click="createScheduleModal(t)"
                 ><i class="material-icons">add</i></a
               >
             </td>
@@ -218,24 +245,30 @@
           <form class="col s12">
             <p v-for="time in this.time_span">
               <label>
-                <input name="group1" type="radio" />
+                <input
+                  name="group1"
+                  type="radio"
+                  v-bind:value="time"
+                  v-model="start_time"
+                />
                 <span>{{ time }}</span>
               </label>
             </p>
             <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="upate_duration"
-                  type="number"
-                  step="15"
-                  min="15"
-                  max="120"
-                  v-model.number="duration"
-                  value="this.task.duration"
-                />
-                <label class="update-label" for="update-duration"
-                  >所要時間</label
-                >
+              <div class=" col s12">
+                <label>タスクを選択</label>
+                <select class="browser-default">
+                  <option value="" disabled selected
+                    >アサインするタスクを選択してください</option
+                  >
+                  <option
+                    v-for="task in tasks"
+                    v-bind:id="'select_task_' + task.id"
+                    v-bind:value="task.id"
+                    v-if="!task.completed"
+                    >{{ task.content }} -{{ task.duration }}分</option
+                  >
+                </select>
               </div>
             </div>
           </form>
@@ -268,6 +301,10 @@ export default {
       comment: '',
       duration: '',
       completed: '',
+      current_date: '',
+      start_date: '',
+      start_time: '',
+      task_id: '',
       time_span: [],
       time_list: [
         '0800',
@@ -331,7 +368,9 @@ export default {
     };
   },
   mounted: function() {
+    this.currentDateToday();
     this.fetchTasks();
+    this.fetchSchedules();
   },
   methods: {
     fetchTasks: function() {
@@ -466,17 +505,78 @@ export default {
         }
       );
     },
-    assignTask: function(base_time) {
+    fetchSchedules: function() {
+      axios
+        .get('/api/schedules', { params: { start_date: this.current_date } })
+        .then(
+          (response) => {
+            for (let i = 0; i < response.data.schedules.length; i++) {
+              this.tasks.push(response.data.schedules[i]);
+            }
+          },
+          (error) => {
+            console.log(error, response);
+          }
+        );
+    },
+    createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
       console.log(base_time);
       console.log(this.time_list);
       let base_time_index = this.time_list.findIndex((i) => i === base_time);
       console.log(base_time_index);
-      this.time_span = this.time_list.slice(
+      let time_span_str = this.time_list.slice(
         base_time_index,
         base_time_index + 4
       );
+
+      this.time_span = time_span_str.map(this.strToTime);
       console.log(this.time_span);
+    },
+    createSchedule: function() {
+      if (!this.content || !this.duration) return;
+      axios
+        .post('/api/schedules', {
+          schedule: {
+            start_date: this.start_date,
+            start_time: this.start_time,
+            task_id: this.task_id,
+          },
+        })
+        .then(
+          (response) => {
+            this.tasks.unshift(response.data.task);
+            this.content = '';
+            this.comment = '';
+            this.duration = '';
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    },
+    strToTime: function(str) {
+      return `${str.substr(0, 2)}:${str.substr(2, 2)}`;
+    },
+    currentDateToday: function() {
+      let now = new Date();
+      this.current_date = now;
+      console.log(`今日は${this.current_date}です。`);
+      this.fetchSchedules();
+    },
+    currentDateNext: function(day) {
+      console.log('実行前のcurrent_dateは');
+      console.log(this.current_date);
+      this.currrent_day = day.setDate(day.getDate() + 1);
+      console.log(`${this.current_date}にカレントデイトを変更しました`);
+      this.fetchSchedules();
+    },
+    currentDateBefore: function(day) {
+      console.log('実行前のcurrent_dateは');
+      console.log(this.current_date);
+      this.currrent_day = day.setDate(day.getDate() - 1);
+      console.log(`${this.current_date}にカレントデイトを変更しました`);
+      this.fetchSchedules();
     },
   },
 };
@@ -523,5 +623,17 @@ td.time {
 td.assign {
   text-align: center;
   width: 80px;
+}
+.dateControl {
+  text-align: center;
+}
+
+#next-day {
+}
+#today {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+#before-day {
 }
 </style>

@@ -3,27 +3,16 @@
     <div class="container">
       <div class="row">
         <a
-          id="next-day"
-          　class="btn-floating waves-effect waves-light orange modal-trigger"
-          href="#createTaskModal"
-          ><i class="material-icons">navigate_before</i></a
-        >
-        <a
           id="add-task"
           class="btn-floating btn-large waves-effect waves-light orange modal-trigger"
           href="#createTaskModal"
           ><i class="material-icons">add</i></a
         >
-        <a
-          id="before-day"
-          class="btn-floating waves-effect waves-light orange modal-trigger"
-          href="#createTaskModal"
-          ><i class="material-icons">navigate_next</i></a
-        >
       </div>
     </div>
   </footer>
 </template>
+
 <style scoped>
 footer {
   position: absolute;
