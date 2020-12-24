@@ -93,7 +93,22 @@
             <th></th>
           </tr>
         </thead>
-        <tbody id="schedule-tbody"></tbody>
+        <tbody id="schedule-tbody">
+          <tr v-for="(t, index) in time_list" v-bind:id="t">
+            <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
+              {{ strToTime(t) }}
+            </td>
+            <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
+              <a
+                id="add-task"
+                class="btn-floating  waves-effect waves-light orange modal-trigger"
+                href="#assignTaskModal"
+                v-on:click="createScheduleModal(t)"
+                ><i class="material-icons">add</i></a
+              >
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <!-- タスク追加モーダル -->
@@ -559,6 +574,7 @@ export default {
           }
         );
       this.createBlankScheduleTable();
+      this.drawSchedule();
     },
     createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
@@ -589,6 +605,7 @@ export default {
             this.schedules.unshift(response.data.schedule);
             this.start_time = '';
             this.task_id = '';
+            this.createBlankScheduleTable();
             this.fetchSchedules();
           },
           (error) => {
@@ -612,7 +629,7 @@ export default {
           tr_element.appendChild(td_time);
         }
         let td_schedule = document.createElement('td');
-        td_schedule.id = `row_s+${time}`;
+        td_schedule.id = `row_s_${time}`;
         tr_element.appendChild(td_schedule);
         if (time.slice(-2) === '00') {
           let td_button = document.createElement('td');
@@ -623,8 +640,10 @@ export default {
           let i_button = document.createElement('i');
           i_button.className = 'material-icons';
           i_button.innerText = 'add';
+          a_button.href = '#assignTaskModal';
           a_button.className =
             'btn-floating  waves-effect waves-light orange modal-trigger';
+          a_button.setAttribute('on:click', `createScheduleModal(${time})`);
           a_button.appendChild(i_button);
           td_button.appendChild(a_button);
           tr_element.appendChild(td_button);
@@ -672,7 +691,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 [v-cloak] {
   display: none;
 }
