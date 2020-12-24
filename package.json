@@ -4,6 +4,7 @@
   "dependencies": {
     "@rails/webpacker": "5.2.1",
     "axios": "^0.21.0",
+    "lodash": "^4.17.20",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",
     "vue-material": "^1.0.0-beta-15",
@@ -11,8 +12,6 @@
     "vue-template-compiler": "^2.6.12"
   },
   "devDependencies": {
-    "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
     "webpack-dev-server": "^3.11.0"
   }
 }
