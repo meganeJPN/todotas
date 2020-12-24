@@ -561,7 +561,9 @@ export default {
             response.data.s_hide_list.forEach(function(row_h_id) {
               console.log('削除する要素は');
               console.log(document.getElementById('row_s_' + row_h_id));
-              document.getElementById('row_s_' + row_h_id).remove();
+
+              if (!document.getElementById('row_s_' + row_h_id))
+                document.getElementById('row_s_' + row_h_id).remove();
             });
             this.s_hide_list = response.data.s_hide_list;
             console.log('this.s_show_list');
@@ -615,40 +617,17 @@ export default {
     },
     createBlankScheduleTable: function() {
       let tbody_schedule = document.getElementById('schedule-tbody');
-      while (tbody_schedule.firstChild) {
-        tbody_schedule.removeChild(tbody_schedule.firstChild);
-      }
       this.time_list.forEach(function(time) {
-        let tr_element = document.createElement('tr');
-        tr_element.id = time;
-        if (time.slice(-2) === '00') {
-          let td_time = document.createElement('td');
-          td_time.className = 'time';
-          td_time.setAttribute('rowSpan', 4);
-          td_time.innerText = `${time.substr(0, 2)}:${time.substr(2, 2)}`;
-          tr_element.appendChild(td_time);
+        let tr_element = document.getElementById(time);
+        if (document.getElementById(`row_s_${time}`) === null) {
+          let td_schedule = document.createElement('td');
+          td_schedule.id = `row_s_${time}`;
+          tr_element.appendChild(td_schedule);
+          document.getElementById('schedule-tbody').appendChild(tr_element);
+        } else {
+          document.getElementById(`row_s_${time}`).innerText = '';
         }
-        let td_schedule = document.createElement('td');
-        td_schedule.id = `row_s_${time}`;
-        tr_element.appendChild(td_schedule);
-        if (time.slice(-2) === '00') {
-          let td_button = document.createElement('td');
-          td_button.className = 'assign';
-
-          td_button.setAttribute('rowSpan', 4);
-          let a_button = document.createElement('a');
-          let i_button = document.createElement('i');
-          i_button.className = 'material-icons';
-          i_button.innerText = 'add';
-          a_button.href = '#assignTaskModal';
-          a_button.className =
-            'btn-floating  waves-effect waves-light orange modal-trigger';
-          a_button.setAttribute('on:click', `createScheduleModal(${time})`);
-          a_button.appendChild(i_button);
-          td_button.appendChild(a_button);
-          tr_element.appendChild(td_button);
-        }
-        document.getElementById('schedule-tbody').appendChild(tr_element);
+        console.log(tr_element);
       });
     },
     drawSchedule: function() {
