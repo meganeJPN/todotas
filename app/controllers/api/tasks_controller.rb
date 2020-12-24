@@ -5,6 +5,10 @@ class Api::TasksController < ApplicationController
   # GET /tasks
   def index
     @tasks = Task.order('updated_at DESC')
+    @tasks_assigned = Task.eager_load(:schedules).where(tasks: {completed: false},schedules: {start_date: params[:current_date]})
+    tasks_not_assigned_nil = Task.eager_load(:schedules).where(tasks: {completed: false}).where(schedules: {start_date: nil})
+    tasks_not_assigned_other = Task.eager_load(:schedules).where(tasks: {completed: false}).where.not(schedules: {start_date: params[:current_date]})
+    @tasks_not_assigned = tasks_not_assigned_nil + tasks_not_assigned_other;
   end
 
   # POST /tasks
@@ -28,7 +32,7 @@ class Api::TasksController < ApplicationController
   end
 
   def show
-    @task = Task.find(params[:id])
+
   end
 
   def destroy

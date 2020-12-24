@@ -266,11 +266,13 @@
                     >アサインするタスクを選択してください</option
                   >
                   <option
-                    v-for="task in tasks"
-                    v-bind:id="'select_task_' + task.id"
-                    v-bind:value="task.id"
-                    v-if="!task.completed"
-                    >{{ task.content }} -{{ task.duration }}分</option
+                    v-for="task_not_assigned in tasks_not_assigned"
+                    v-bind:id="'select_task_' + task_not_assigned.id"
+                    v-bind:value="task_not_assigned.id"
+                    v-if="!task_not_assigned.completed"
+                    >{{ task_not_assigned.content }} -{{
+                      task_not_assigned.duration
+                    }}分</option
                   >
                 </select>
               </div>
@@ -298,6 +300,8 @@ export default {
   data: function() {
     return {
       tasks: [],
+      tasks_not_assigned: [],
+      tasks_assigned: [],
       task: {},
       id: '',
       content: '',
@@ -382,16 +386,27 @@ export default {
   },
   methods: {
     fetchTasks: function() {
-      axios.get('/api/tasks').then(
-        (response) => {
-          for (let i = 0; i < response.data.tasks.length; i++) {
-            this.tasks.push(response.data.tasks[i]);
+      axios
+        .get('/api/tasks', { params: { current_date: this.current_date } })
+        .then(
+          (response) => {
+            this.tasks.length = 0;
+            this.tasks_assigned.length = 0;
+            this.tasks_not_assigned.length = 0;
+            for (let i = 0; i < response.data.tasks.length; i++) {
+              this.tasks.push(response.data.tasks[i]);
+            }
+            for (let j = 0; j < response.data.tasks_assigned.length; j++) {
+              this.tasks_assigned.push(response.data.tasks_assigned[j]);
+            }
+            for (let k = 0; k < response.data.tasks_not_assigned.length; k++) {
+              this.tasks_not_assigned.push(response.data.tasks_not_assigned[k]);
+            }
+          },
+          (error) => {
+            console.log(error, response);
           }
-        },
-        (error) => {
-          console.log(error, response);
-        }
-      );
+        );
     },
     displayFinishedTasks: function() {
       document
@@ -411,6 +426,7 @@ export default {
         .then(
           (response) => {
             this.tasks.unshift(response.data.task);
+            this.tasks_not_assigned.unshift(response.data.task);
             this.content = '';
             this.comment = '';
             this.duration = '';
@@ -424,6 +440,7 @@ export default {
       axios.put('/api/tasks/' + task_id, { task: { completed: true } }).then(
         (response) => {
           this.moveFinishedTask(task_id);
+          this.fetchTasks();
         },
         (error) => {
           console.log(error);
@@ -471,6 +488,7 @@ export default {
             this.comment = '';
             this.duration = '';
             this.completed = '';
+            this.fetchTasks();
           },
           (error) => {
             console.log(error);

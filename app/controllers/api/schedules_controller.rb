@@ -17,10 +17,12 @@ class Api::SchedulesController < ApplicationController
   end
 
   def create
-    binding.irb
-    # if Schedule.where(task_id: params[:schedule][:task_id]).where(start_date: params[:schedule][:start_date])
-    #end
     @schedule = Schedule.new(schedule_params)
+    if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date])
+      @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")
+      return render json: @schedule.errors, status: :unprocessable_entity   
+    end
+    
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
     if @schedule.save
       render :show, status: :created
