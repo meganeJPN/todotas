@@ -540,6 +540,7 @@ export default {
 
               this.schedules.push(response.data.schedules[i]);
             }
+            this.createBlankScheduleTable();
             for (let j = 0; j < response.data.s_show_list.length; j++) {
               console.log('要素採れた？');
               console.log(response.data.s_show_list[j].row_id);
@@ -561,9 +562,12 @@ export default {
             response.data.s_hide_list.forEach(function(row_h_id) {
               console.log('削除する要素は');
               console.log(document.getElementById('row_s_' + row_h_id));
-
-              if (!document.getElementById('row_s_' + row_h_id))
+              let remove_el = document.getElementById('row_s_' + row_h_id);
+              if (remove_el) {
+                console.log('本当に消えるのは');
+                console.log(document.getElementById('row_s_' + row_h_id));
                 document.getElementById('row_s_' + row_h_id).remove();
+              }
             });
             this.s_hide_list = response.data.s_hide_list;
             console.log('this.s_show_list');
@@ -575,8 +579,6 @@ export default {
             console.log(error, response);
           }
         );
-      this.createBlankScheduleTable();
-      this.drawSchedule();
     },
     createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
@@ -621,25 +623,20 @@ export default {
       this.time_list.forEach(function(time) {
         let tr_element = document.getElementById(time);
         if (document.getElementById(`row_s_${time}`) === null) {
+          console.log(`row_s_${time}の時は削除`);
           let td_schedule = document.createElement('td');
           td_schedule.id = `row_s_${time}`;
           tr_element.appendChild(td_schedule);
-          document.getElementById('schedule-tbody').appendChild(tr_element);
         } else {
           document.getElementById(`row_s_${time}`).innerText = '';
           document.getElementById(`row_s_${time}`).setAttribute('rowSpan', 1);
+          console.log(`row_s_${time}の時はリセット`);
+          console.log(document.getElementById(`row_s_${time}`));
         }
         console.log(tr_element);
       });
     },
-    drawSchedule: function() {
-      let el;
-      this.s_show_list.forEach((s_show) => {
-        el = document.getElementById('row_s_' + s_show.row_id);
-      });
-      console.log('エレメント採れてる？');
-      console.log(el);
-    },
+
     createScheduleHash: function() {},
     strToTime: function(str) {
       return `${str.substr(0, 2)}:${str.substr(2, 2)}`;
