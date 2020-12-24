@@ -616,6 +616,7 @@ export default {
         );
     },
     createBlankScheduleTable: function() {
+      console.log('createBlankScheduleTable呼ばれてる？');
       let tbody_schedule = document.getElementById('schedule-tbody');
       this.time_list.forEach(function(time) {
         let tr_element = document.getElementById(time);
@@ -626,6 +627,7 @@ export default {
           document.getElementById('schedule-tbody').appendChild(tr_element);
         } else {
           document.getElementById(`row_s_${time}`).innerText = '';
+          document.getElementById(`row_s_${time}`).setAttribute('rowSpan', 1);
         }
         console.log(tr_element);
       });
