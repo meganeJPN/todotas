@@ -17,7 +17,7 @@
           <ul class="collection task-list">
             <li
               v-for="task in tasks"
-              v-if="task.completed"
+              v-if="!task.completed"
               v-bind:id="'row_task_' + task.id"
               class="collection-item"
             >
@@ -26,7 +26,7 @@
                 href="#showTaskModal"
                 v-on:click="showTask(task.id)"
               >
-                <span v-bind:id="'task_' + task.id" class="word-color-black">
+                <span v-bind:id="'task_' + task.id">
                   {{ task.content }}
                 </span></a
               >
@@ -94,11 +94,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="t in time_list" v-bind:id="t">
+          <tr v-for="(t, index) in time_list" v-bind:id="t">
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
               {{ strToTime(t) }}
             </td>
-            <td>Eclair</td>
+            <td
+              v-if="time_list[index] === '00'"
+              v-bind:id="'row_schedule_' + t"
+            >
+              {{ index }}
+            </td>
+
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
               <a
                 id="add-task"
@@ -257,7 +263,7 @@
             <div class="row">
               <div class=" col s12">
                 <label>タスクを選択</label>
-                <select class="browser-default">
+                <select class="browser-default" v-model="task_id">
                   <option value="" disabled selected
                     >アサインするタスクを選択してください</option
                   >
@@ -277,7 +283,7 @@
       <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
         <div
-          v-on:click="doneTask(id)"
+          v-on:click="createSchedule"
           class="waves-effect waves-light btn modal-close"
         >
           完了
@@ -302,6 +308,7 @@ export default {
       duration: '',
       completed: '',
       current_date: '',
+      schedules: [],
       start_date: '',
       start_time: '',
       task_id: '',
@@ -365,6 +372,7 @@ export default {
         '2145',
         '2200',
       ],
+      schedule_list: [],
     };
   },
   mounted: function() {
@@ -511,13 +519,38 @@ export default {
         .then(
           (response) => {
             for (let i = 0; i < response.data.schedules.length; i++) {
-              this.tasks.push(response.data.schedules[i]);
+              let start_time = new Date(response.data.schedules[i].start_time);
+              response.data.schedules[i].start_time =
+                start_time
+                  .getHours()
+                  .toString()
+                  .padStart(2, '0') +
+                ':' +
+                start_time
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, 0);
+              console.log(response.data.schedules[i].start_time);
+              let end_time = new Date(response.data.schedules[i].end_time);
+              response.data.schedules[i].end_time =
+                end_time
+                  .getHours()
+                  .toString()
+                  .padStart(2, '0') +
+                ':' +
+                end_time
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, 0);
+              console.log(response.data.schedules[i].end_time);
+              this.schedules.push(response.data.schedules[i]);
             }
           },
           (error) => {
             console.log(error, response);
           }
         );
+      this.createScheduleHash();
     },
     createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
@@ -534,35 +567,40 @@ export default {
       console.log(this.time_span);
     },
     createSchedule: function() {
-      if (!this.content || !this.duration) return;
+      if (!this.current_date || !this.start_time || !this.task_id) return;
       axios
         .post('/api/schedules', {
           schedule: {
-            start_date: this.start_date,
+            start_date: this.current_date,
             start_time: this.start_time,
             task_id: this.task_id,
           },
         })
         .then(
           (response) => {
-            this.tasks.unshift(response.data.task);
-            this.content = '';
-            this.comment = '';
-            this.duration = '';
+            this.schedules.unshift(response.data.schedule);
+            this.start_time = '';
+            this.task_id = '';
           },
           (error) => {
             console.log(error);
           }
         );
     },
+    createScheduleHash: function() {},
     strToTime: function(str) {
       return `${str.substr(0, 2)}:${str.substr(2, 2)}`;
+    },
+    durationToEndTime: function(time, duration) {
+      endTime = time;
     },
     currentDateToday: function() {
       let now = new Date();
       this.current_date = now;
       console.log(`今日は${this.current_date}です。`);
       this.fetchSchedules();
+      console.log('this.tasks');
+      console.log(this.tasks);
     },
     currentDateNext: function(day) {
       console.log('実行前のcurrent_dateは');
