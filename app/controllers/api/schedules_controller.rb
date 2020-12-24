@@ -28,7 +28,7 @@ class Api::SchedulesController < ApplicationController
     current_day_schedules.each do |current_day_schedule|
       if isDatetimeOverlap(@schedule.start_time,@schedule.end_time,current_day_schedule.start_time,current_day_schedule.end_time)
         @schedule.errors.add(:base, "その時間帯には既に別のタスクが登録されています。")
-        return render json: @schedule.errors, status: :unprocessable_entity 
+        return render json: @schedule.errors, status: :unprocessable_entity
       end
     end
     
