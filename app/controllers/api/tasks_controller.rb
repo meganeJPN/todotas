@@ -24,6 +24,10 @@ class Api::TasksController < ApplicationController
 
   # PATCH/PUT /tasks/1
   def update
+    if Schedule.exists?(task_id: @task.id)
+      @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため更新できません。")
+      return render json: @task.errors, status: :unprocessable_entity
+    end
     if @task.update(task_params)
       render :show, status: :ok
     else
