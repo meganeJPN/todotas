@@ -98,13 +98,7 @@
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
               {{ strToTime(t) }}
             </td>
-            <td
-              v-if="time_list[index] === '00'"
-              v-bind:id="'row_schedule_' + t"
-            >
-              {{ index }}
-            </td>
-
+            <td v-bind:id="'row_s_' + t"></td>
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
               <a
                 id="add-task"
@@ -309,6 +303,8 @@ export default {
       completed: '',
       current_date: '',
       schedules: [],
+      s_show_list: [],
+      s_hiide_list: [],
       start_date: '',
       start_time: '',
       task_id: '',
@@ -542,15 +538,42 @@ export default {
                   .getMinutes()
                   .toString()
                   .padStart(2, 0);
-              console.log(response.data.schedules[i].end_time);
+
               this.schedules.push(response.data.schedules[i]);
             }
+            for (let j = 0; j < response.data.s_show_list.length; j++) {
+              console.log('要素採れた？');
+              console.log(response.data.s_show_list[j].row_id);
+              console.log('row_s_' + response.data.s_show_list[j].row_id);
+              console.log(
+                document.getElementById(
+                  'row_s_' + response.data.s_show_list[j].row_id
+                )
+              );
+              document.getElementById(
+                'row_s_' + response.data.s_show_list[j].row_id
+              ).innerText = response.data.s_show_list[j].task.content;
+              this.s_show_list.push(response.data.s_show_list[j]);
+              document
+                .getElementById('row_s_' + response.data.s_show_list[j].row_id)
+                .setAttribute('rowSpan', response.data.s_show_list[j].rowspan);
+              this.s_show_list.push(response.data.s_show_list[j]);
+            }
+            response.data.s_hide_list.forEach(function(row_h_id) {
+              console.log('削除する要素は');
+              console.log(document.getElementById('row_s_' + row_h_id));
+              document.getElementById('row_s_' + row_h_id).remove();
+            });
+            this.s_hide_list = response.data.s_hide_list;
+            console.log('this.s_show_list');
+            console.log(this.s_show_list);
+            console.log('this.s_show_list');
+            console.log(this.s_hide_list);
           },
           (error) => {
             console.log(error, response);
           }
         );
-      this.createScheduleHash();
     },
     createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
@@ -586,6 +609,14 @@ export default {
             console.log(error);
           }
         );
+    },
+    drawSchedule: function() {
+      let el;
+      this.s_show_list.forEach((s_show) => {
+        el = document.getElementById('row_s_' + s_show.row_id);
+      });
+      console.log('エレメント採れてる？');
+      console.log(el);
     },
     createScheduleHash: function() {},
     strToTime: function(str) {

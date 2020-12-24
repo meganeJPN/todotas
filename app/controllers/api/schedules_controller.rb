@@ -12,7 +12,7 @@ class Api::SchedulesController < ApplicationController
       s_show[:schedule] = schedule
       s_show[:rowspan] = Task.find(schedule.task_id).duration / 15
       @s_show_list.push(s_show)
-      (Task.find(schedule.task_id).duration/15).times.map.each_with_index{|i| @s_hide_list.push((schedule.start_time+15.minutes*i).strftime("%H")+(schedule.start_time+15.minutes*i).strftime("%M"))}
+      (Task.find(schedule.task_id).duration/15-1).times.map.each_with_index{|i| @s_hide_list.push((schedule.start_time+15.minutes+15.minutes*i).strftime("%H")+(schedule.start_time+15.minutes+15.minutes*i).strftime("%M"))}
     end
   end
 
