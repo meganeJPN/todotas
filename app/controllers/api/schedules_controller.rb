@@ -18,12 +18,21 @@ class Api::SchedulesController < ApplicationController
 
   def create
     @schedule = Schedule.new(schedule_params)
+    @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
     if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date])
       @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")
-      return render json: @schedule.errors, status: :unprocessable_entity   
+      return render json: @schedule.errors, status: :unprocessable_entity
+    end
+
+    current_day_schedules = Schedule.where(start_date: params[:schedule][:start_date])
+    current_day_schedules.each do |current_day_schedule|
+      if isDatetimeOverlap(@schedule.start_time,@schedule.end_time,current_day_schedule.start_time,current_day_schedule.end_time)
+        @schedule.errors.add(:base, "その時間帯には既に別のタスクが登録されています。")
+        return render json: @schedule.errors, status: :unprocessable_entity 
+      end
     end
     
-    @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
+   
     if @schedule.save
       render :show, status: :created
     else
@@ -52,5 +61,20 @@ class Api::SchedulesController < ApplicationController
 
   def set_schedule
     @schedule = Schedule.find(params[:id])
+  end
+
+  def isDatetimeOverlap(start1,end1,start2,end2)
+    logger.debug("時間比較の確認")
+    logger.debug("start1")
+    logger.debug(start1)
+    logger.debug("end1")
+    logger.debug(end1)
+    logger.debug("start2")
+    logger.debug(start2)
+    logger.debug("end2")
+    logger.debug(end2)
+    logger.debug("比較結果")
+    logger.debug(start1 <= end2 && end1 >= start2)
+    start1 < end2 && end1 > start2
   end
 end

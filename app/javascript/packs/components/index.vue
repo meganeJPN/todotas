@@ -670,6 +670,8 @@ export default {
     },
     currentDateToday: function() {
       let now = new Date();
+      console.log('new Date()の結果は');
+      console.log(now);
       this.current_date = now;
       console.log(`今日は${this.current_date}です。`);
       this.fetchSchedules();
