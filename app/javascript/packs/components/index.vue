@@ -98,7 +98,12 @@
             <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
               {{ strToTime(t) }}
             </td>
-            <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
+            <td
+              v-if="t.slice(-2) === '00'"
+              rowspan="4"
+              class="assign"
+              v-bind:id="'row_a_' + t"
+            >
               <a
                 id="add-task"
                 class="btn-floating  waves-effect waves-light orange modal-trigger"
@@ -625,8 +630,9 @@ export default {
         if (document.getElementById(`row_s_${time}`) === null) {
           console.log(`row_s_${time}の時は削除`);
           let td_schedule = document.createElement('td');
+          let td_assign = document.getElementById(`row_a_${time}`);
           td_schedule.id = `row_s_${time}`;
-          tr_element.appendChild(td_schedule);
+          tr_element.insertBefore(td_schedule, td_assign);
         } else {
           document.getElementById(`row_s_${time}`).innerText = '';
           document.getElementById(`row_s_${time}`).setAttribute('rowSpan', 1);
