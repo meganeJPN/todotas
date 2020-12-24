@@ -17,6 +17,9 @@ class Api::SchedulesController < ApplicationController
   end
 
   def create
+    binding.irb
+    # if Schedule.where(task_id: params[:schedule][:task_id]).where(start_date: params[:schedule][:start_date])
+    #end
     @schedule = Schedule.new(schedule_params)
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
     if @schedule.save

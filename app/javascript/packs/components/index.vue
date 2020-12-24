@@ -290,7 +290,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import { reject } from 'lodash';
@@ -376,6 +375,7 @@ export default {
     };
   },
   mounted: function() {
+    M.AutoInit();
     this.currentDateToday();
     this.fetchTasks();
     this.fetchSchedules();
