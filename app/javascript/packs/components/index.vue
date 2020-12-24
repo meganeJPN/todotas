@@ -180,7 +180,7 @@
                   value="this.task.content"
                   type="text"
                   data-length="50"
-                  v-model="content"
+                  v-model="task.content"
                 />
                 <label class="update-label" for="update_content"
                   >タスク内容</label
@@ -193,7 +193,7 @@
                   id="update-comment"
                   class="materialize-textarea active"
                   data-length="400"
-                  v-model="comment"
+                  v-model="task.comment"
                 ></textarea>
                 <label class="update-label" for="update-comment"
                   >コメント</label
@@ -224,12 +224,14 @@
         <div
           v-on:click="deleteTask(id)"
           class="waves-effect waves-light btn modal-close"
+          v-if="!this.task.assigned"
         >
           削除
         </div>
         <div
           v-on:click="updateTask(id)"
           class="waves-effect waves-light btn modal-close"
+          v-if="!this.task.assigned"
         >
           更新
         </div>

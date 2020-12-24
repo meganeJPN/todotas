@@ -36,7 +36,7 @@ class Api::TasksController < ApplicationController
   end
 
   def show
-
+    @assigned = Schedule.exists?(task_id: @task.id)
   end
 
   def destroy
