@@ -93,23 +93,7 @@
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="(t, index) in time_list" v-bind:id="t">
-            <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
-              {{ strToTime(t) }}
-            </td>
-            <td v-bind:id="'row_s_' + t"></td>
-            <td v-if="t.slice(-2) === '00'" rowspan="4" class="assign">
-              <a
-                id="add-task"
-                class="btn-floating  waves-effect waves-light orange modal-trigger"
-                href="#assignTaskModal"
-                v-on:click="createScheduleModal(t)"
-                ><i class="material-icons">add</i></a
-              >
-            </td>
-          </tr>
-        </tbody>
+        <tbody id="schedule-tbody"></tbody>
       </table>
     </div>
     <!-- タスク追加モーダル -->
@@ -574,6 +558,7 @@ export default {
             console.log(error, response);
           }
         );
+      this.createBlankScheduleTable();
     },
     createScheduleModal: function(base_time) {
       console.log('時間は取得できていますか？');
@@ -604,11 +589,48 @@ export default {
             this.schedules.unshift(response.data.schedule);
             this.start_time = '';
             this.task_id = '';
+            this.fetchSchedules();
           },
           (error) => {
             console.log(error);
           }
         );
+    },
+    createBlankScheduleTable: function() {
+      let tbody_schedule = document.getElementById('schedule-tbody');
+      while (tbody_schedule.firstChild) {
+        tbody_schedule.removeChild(tbody_schedule.firstChild);
+      }
+      this.time_list.forEach(function(time) {
+        let tr_element = document.createElement('tr');
+        tr_element.id = time;
+        if (time.slice(-2) === '00') {
+          let td_time = document.createElement('td');
+          td_time.className = 'time';
+          td_time.setAttribute('rowSpan', 4);
+          td_time.innerText = `${time.substr(0, 2)}:${time.substr(2, 2)}`;
+          tr_element.appendChild(td_time);
+        }
+        let td_schedule = document.createElement('td');
+        td_schedule.id = `row_s+${time}`;
+        tr_element.appendChild(td_schedule);
+        if (time.slice(-2) === '00') {
+          let td_button = document.createElement('td');
+          td_button.className = 'assign';
+
+          td_button.setAttribute('rowSpan', 4);
+          let a_button = document.createElement('a');
+          let i_button = document.createElement('i');
+          i_button.className = 'material-icons';
+          i_button.innerText = 'add';
+          a_button.className =
+            'btn-floating  waves-effect waves-light orange modal-trigger';
+          a_button.appendChild(i_button);
+          td_button.appendChild(a_button);
+          tr_element.appendChild(td_button);
+        }
+        document.getElementById('schedule-tbody').appendChild(tr_element);
+      });
     },
     drawSchedule: function() {
       let el;
