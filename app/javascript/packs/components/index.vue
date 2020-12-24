@@ -578,10 +578,14 @@ export default {
               document.getElementById(
                 'row_s_' + response.data.s_show_list[j].row_id
               ).innerText = response.data.s_show_list[j].task.content;
+
               this.s_show_list.push(response.data.s_show_list[j]);
               document
                 .getElementById('row_s_' + response.data.s_show_list[j].row_id)
                 .setAttribute('rowSpan', response.data.s_show_list[j].rowspan);
+              document.getElementById(
+                'row_s_' + response.data.s_show_list[j].row_id
+              ).className = 'blue-grey lighten-4';
               this.s_show_list.push(response.data.s_show_list[j]);
             }
             response.data.s_hide_list.forEach(function(row_h_id) {
@@ -742,6 +746,9 @@ td.assign {
 }
 .dateControl {
   text-align: center;
+}
+.schedule_bar {
+  background-color: blue;
 }
 
 #next-day {
