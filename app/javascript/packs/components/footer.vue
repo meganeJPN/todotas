@@ -1,19 +1,11 @@
-<template>
-  <footer class="page-footer">
-    <div class="container">
-      <div class="row">
-        <a
-          id="add-task"
-          class="btn-floating btn-large waves-effect waves-light orange modal-trigger"
-          href="#createTaskModal"
-          ><i class="material-icons">add</i></a
-        >
-      </div>
-    </div>
-  </footer>
-</template>
+<template> </template>
 
 <style scoped>
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
 footer {
   position: absolute;
   bottom: 0;

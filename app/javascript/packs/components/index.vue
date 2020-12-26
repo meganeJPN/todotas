@@ -1,62 +1,101 @@
+<template> </template>
+
 <template>
   <div>
+    <el-tabs type="border-card">
+      <el-tab-pane>
+        <span slot="label"><i class="el-icon-edit-outline"></i>Working</span>
+        <el-table :data="tasks_working" style="width: 100%">
+          <el-table-column label="" width="400">
+            <template slot-scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <p>タスク: {{ scope.row.content }}</p>
+                <p>所要時間: {{ scope.row.duration }}分</p>
+                <div slot="reference" class="name-wrapper">
+                  <i class="el-icon-time"></i
+                  ><el-button type="text" @click="dialogFormVisible = true"
+                    ><span style="margin-left: 10px">{{
+                      scope.row.content
+                    }}</span></el-button
+                  >
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column label="">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+                >Edit</el-button
+              >
+              <el-button type="text" @click="dialogFormVisible = true"
+                >open a Form nested Dialog</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane
+        ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
+
+        <el-table :data="tasks_working" style="width: 100%">
+          <el-table-column label="Name" width="400">
+            <template slot-scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <p>タスク: {{ scope.row.content }}</p>
+                <p>所要時間: {{ scope.row.duration }}分</p>
+                <div slot="reference" class="name-wrapper">
+                  <i class="el-icon-time"></i>
+                  <span style="margin-left: 10px">{{ scope.row.content }}</span>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column label="Operations">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+                >Edit</el-button
+              >
+
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+                >Delete</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table></el-tab-pane
+      >
+    </el-tabs>
+    <el-footer style="text-align: right; font-size: 12px">
+      <el-row
+        ><el-button
+          type="primary"
+          icon="el-icon-edit"
+          circle
+          @click="dialogFormVisible = true"
+        ></el-button
+      ></el-row>
+    </el-footer>
     <!-- リスト表示部分 -->
-    <div class="row">
-      <div class="col s12">
-        <ul class="tabs">
-          <li class="tab col s3">
-            <a class="active" href="#tab-working">作業中</a>
-          </li>
-          <li class="tab col s3">
-            <a href="#tab-completed">完了</a>
-          </li>
-        </ul>
+    <template>
+      <div>
+        <el-radio-group v-model="radio1">
+          <el-radio-button label="New York"></el-radio-button>
+          <el-radio-button label="Washington"></el-radio-button>
+          <el-radio-button label="Los Angeles"></el-radio-button>
+          <el-radio-button label="Chicago"></el-radio-button>
+        </el-radio-group>
       </div>
-      <div id="tab-working" class="col s12">
-        <div>
-          <ul class="collection task-list">
-            <li
-              v-for="task in tasks"
-              v-if="!task.completed"
-              v-bind:id="'row_task_' + task.id"
-              class="collection-item"
-            >
-              <a
-                class="waves-effect waves-light modal-trigger display-block"
-                href="#showTaskModal"
-                v-on:click="showTask(task.id)"
-              >
-                <span v-bind:id="'task_' + task.id">
-                  {{ task.content }}
-                </span></a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div id="tab-completed" class="col s12">
-        <div id="finished-tasks">
-          <ul class="collection task-list">
-            <li
-              v-for="task in tasks"
-              v-if="task.completed"
-              v-bind:id="'row_task_completed' + task.id"
-              class="collection-item"
-            >
-              <a
-                class="waves-effect waves-light modal-trigger display-block"
-                href="#showTaskModal"
-                v-on:click="showTask(task.id)"
-              >
-                <span v-bind:for="'task_' + task.id" class="line-through">
-                  {{ task.content }}
-                </span></a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    </template>
+    <template>
+      <div class="block">
+        <el-slider v-model="value" range :marks="marks"> </el-slider></div
+    ></template>
     <div class="dateControl">
       <div class="row">
         <div class="col s12">
@@ -116,6 +155,51 @@
         </tbody>
       </table>
     </div>
+
+    <el-dialog
+      title="新規タスク作成"
+      :visible.sync="dialogFormVisible"
+      width="80%"
+    >
+      <el-form :model="form">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+          <el-input
+            v-model="form.content"
+            autocomplete="off"
+            maxlength="50"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="所要時間" :label-width="formLabelWidth">
+          <div class="duration-slider">
+            <el-slider
+              v-model="form.duration"
+              :step="15"
+              :marks="marks_duration"
+              :min="15"
+              :max="120"
+            >
+            </el-slider>
+          </div>
+        </el-form-item>
+        <el-form-item label="メモ" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            v-model="form.commnet"
+            autocomplete="off"
+            maxlength="400"
+            show-word-limit
+            resize="none"
+            rows="10"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="createTask">Confirm</el-button>
+      </span>
+    </el-dialog>
+
     <!-- タスク追加モーダル -->
     <div id="createTaskModal" class="modal">
       <div class="modal-content">
@@ -302,6 +386,8 @@ export default {
   data: function() {
     return {
       tasks: [],
+      tasks_working: [],
+      tasks_finished: [],
       tasks_not_assigned: [],
       tasks_assigned: [],
       task: {},
@@ -318,6 +404,64 @@ export default {
       start_time: '',
       task_id: '',
       time_span: [],
+      activeName: 'first',
+      radio1: 'New York',
+      radio2: 'New York',
+      radio3: 'New York',
+      radio4: 'New York',
+      count: 0,
+      dialogFormVisible: false,
+      value1: 0,
+      value: [30, 60],
+      marks: {
+        0: '0°C',
+        8: '8°C',
+        37: '37°C',
+        50: {
+          style: {
+            color: '#1989FA',
+          },
+          label: this.$createElement('strong', '50%'),
+        },
+      },
+      marks_duration: {
+        0: '0',
+        15: '15',
+        30: '30',
+        45: '45',
+        60: '60',
+        75: '75',
+        90: '90',
+        105: '105',
+      },
+      form: {
+        content: '',
+        duration: 0,
+        commnet: '',
+      },
+      formLabelWidth: '120px',
+      tableData: [
+        {
+          date: '2016-05-03',
+          name: 'Tom',
+          address: 'No. 189, Grove St, Los Angeles',
+        },
+        {
+          date: '2016-05-02',
+          name: 'Tom',
+          address: 'No. 189, Grove St, Los Angeles',
+        },
+        {
+          date: '2016-05-04',
+          name: 'Tom',
+          address: 'No. 189, Grove St, Los Angeles',
+        },
+        {
+          date: '2016-05-01',
+          name: 'Tom',
+          address: 'No. 189, Grove St, Los Angeles',
+        },
+      ],
       time_list: [
         '0800',
         '0815',
@@ -381,22 +525,34 @@ export default {
     };
   },
   mounted: function() {
-    M.AutoInit();
     this.currentDateToday();
     this.fetchTasks();
     this.fetchSchedules();
   },
   methods: {
+    load: function() {
+      this.count += 2;
+    },
+    handleEdit(index, row) {
+      console.log(index, row);
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
     fetchTasks: function() {
       axios
         .get('/api/tasks', { params: { current_date: this.current_date } })
         .then(
           (response) => {
-            this.tasks.length = 0;
+            this.tasks_working.length = 0;
+            this.tasks_finished.length = 0;
             this.tasks_assigned.length = 0;
             this.tasks_not_assigned.length = 0;
-            for (let i = 0; i < response.data.tasks.length; i++) {
-              this.tasks.push(response.data.tasks[i]);
+            for (let i = 0; i < response.data.tasks_working.length; i++) {
+              this.tasks_working.push(response.data.tasks_working[i]);
+            }
+            for (let i = 0; i < response.data.tasks_finished.length; i++) {
+              this.tasks_finished.push(response.data.tasks_finished[i]);
             }
             for (let j = 0; j < response.data.tasks_assigned.length; j++) {
               this.tasks_assigned.push(response.data.tasks_assigned[j]);
@@ -416,18 +572,18 @@ export default {
         .classList.toggle('display_none');
     },
     createTask: function() {
-      if (!this.content || !this.duration) return;
+      if (!this.form.content || !this.form.duration) return;
       axios
         .post('/api/tasks', {
           task: {
-            content: this.content,
-            comment: this.comment,
-            duration: this.duration,
+            content: this.form.content,
+            comment: this.form.comment,
+            duration: this.form.duration,
           },
         })
         .then(
           (response) => {
-            this.tasks.unshift(response.data.task);
+            this.tasks_working.unshift(response.data.task);
             this.tasks_not_assigned.unshift(response.data.task);
             this.content = '';
             this.comment = '';
@@ -778,5 +934,21 @@ td.assign {
   margin-right: 40px;
 }
 #before-day {
+}
+input[type='radio'] {
+  border: 0px;
+  width: 100%;
+  height: 2em;
+}
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
+.el-footer .el-row {
+  text-align: center;
+}
+.duration-slider {
+  width: 100%;
 }
 </style>

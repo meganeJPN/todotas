@@ -5,6 +5,8 @@ class Api::TasksController < ApplicationController
   # GET /tasks
   def index
     @tasks = Task.order('updated_at DESC')
+    @tasks_working = Task.where(completed: false).order('updated_at DESC')
+    @tasks_finished = Task.where(completed: true)
     @tasks_assigned = Task.eager_load(:schedules).where(tasks: {completed: false},schedules: {start_date: params[:current_date]})
     tasks_not_assigned_nil = Task.eager_load(:schedules).where(tasks: {completed: false}).where(schedules: {start_date: nil})
     tasks_not_assigned_other = Task.eager_load(:schedules).where(tasks: {completed: false}).where.not(schedules: {start_date: params[:current_date]})

@@ -4,7 +4,10 @@
   "dependencies": {
     "@rails/webpacker": "5.2.1",
     "axios": "^0.21.0",
+    "element-ui": "^2.14.1",
+    "element-ui-2.6.3": "npm:element-ui@2.6.3",
     "lodash": "^4.17.20",
+    "style-loader": "^2.0.0",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",
     "vue-material": "^1.0.0-beta-15",

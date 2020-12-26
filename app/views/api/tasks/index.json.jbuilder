@@ -1,5 +1,11 @@
-json.set! :tasks do
-  json.array! @tasks do |task|
+json.set! :tasks_working do
+  json.array! @tasks_working do |task|
+    json.extract! task, :id, :content, :comment, :duration, :completed, :created_at, :updated_at
+  end
+end
+
+json.set! :tasks_finished do
+  json.array! @tasks_finished do |task|
     json.extract! task, :id, :content, :comment, :duration, :completed, :created_at, :updated_at
   end
 end
