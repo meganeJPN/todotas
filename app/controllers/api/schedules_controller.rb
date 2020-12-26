@@ -5,6 +5,11 @@ class Api::SchedulesController < ApplicationController
     @s_show_list = []
     @s_hide_list = []
     @schedules = Schedule.where(start_date: params[:start_date])
+
+    TIME_PITCH_NUM.times.map.each_with_index do |value, i|
+      Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+TIME_PITCH.minutes*i
+    end
+
     @schedules.each do |schedule|
       s_show={}
       s_show[:row_id] = schedule.start_time.strftime("%H") + schedule.start_time.strftime("%M")
