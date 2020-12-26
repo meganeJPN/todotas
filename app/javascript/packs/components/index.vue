@@ -534,8 +534,9 @@ export default {
       );
     },
     fetchSchedules: function() {
+      let current_date_str = this.dateToStr(this.current_date);
       axios
-        .get('/api/schedules', { params: { start_date: this.current_date } })
+        .get('/api/schedules', { params: { start_date: current_date_str } })
         .then(
           (response) => {
             for (let i = 0; i < response.data.schedules.length; i++) {
@@ -697,6 +698,25 @@ export default {
       this.currrent_day = day.setDate(day.getDate() - 1);
       console.log(`${this.current_date}にカレントデイトを変更しました`);
       this.fetchSchedules();
+    },
+    dateToStr: function(date) {
+      let year_str = date.getFullYear();
+      //月だけ+1すること
+      let month_str = 1 + date.getMonth();
+      let day_str = date.getDate();
+      let hour_str = date.getHours();
+      let minute_str = date.getMinutes();
+      let second_str = date.getSeconds();
+      let format_str = 'YYYY-MM-DD';
+
+      month_str = ('0' + month_str).slice(-2);
+      day_str = ('0' + day_str).slice(-2);
+
+      format_str = format_str.replace(/YYYY/g, year_str);
+      format_str = format_str.replace(/MM/g, month_str);
+      format_str = format_str.replace(/DD/g, day_str);
+
+      return format_str;
     },
   },
 };
