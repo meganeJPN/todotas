@@ -191,7 +191,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogCreateTaskVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="createTask">Confirm</el-button>
+        <el-button type="primary" @click="createTask">作成</el-button>
       </span>
     </el-dialog>
 
@@ -236,137 +236,15 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogShowTaskVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="updateTask">Confirm</el-button>
+        <el-button type="danger" @click="openConfirmDeleteTask">削除</el-button>
+        <el-button type="primary" @click="updateTask">更新</el-button
+        ><template>
+          <el-button type="text" @click="openConfirmDeleteTask"
+            >Click to open the Message Box</el-button
+          >
+        </template>
       </span>
     </el-dialog>
-
-    <!-- タスク追加モーダル -->
-    <div id="createTaskModal" class="modal">
-      <div class="modal-content">
-        <div class="row">
-          <form class="col s12">
-            <div class="row">
-              <div class="input-field col s6">
-                <input
-                  id="input_content"
-                  type="text"
-                  data-length="50"
-                  v-model="content"
-                />
-                <label for="input_content">タスク内容</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea
-                  id="input_comment"
-                  class="materialize-textarea"
-                  data-length="400"
-                  v-model="comment"
-                ></textarea>
-                <label for="input_comment">コメント</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="input_duration"
-                  type="number"
-                  step="15"
-                  min="15"
-                  max="120"
-                  v-model.number="duration"
-                />
-                <label for="input_duration">所要時間</label>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
-        <div v-on:click="createTask" class="waves-effect waves-light btn">
-          追加
-        </div>
-      </div>
-    </div>
-
-    <!-- タスク詳細モーダル -->
-    <div id="showTaskModal" class="modal">
-      <div class="modal-content">
-        <h4>タスク詳細</h4>
-        <div class="row">
-          <form class="col s12">
-            <div class="row">
-              <div class="input-field col s6">
-                <input
-                  id="uppdate_conttent"
-                  value="this.task.content"
-                  type="text"
-                  data-length="50"
-                  v-model="task.content"
-                />
-                <label class="update-label" for="update_content"
-                  >タスク内容</label
-                >
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea
-                  id="update-comment"
-                  class="materialize-textarea active"
-                  data-length="400"
-                  v-model="task.comment"
-                ></textarea>
-                <label class="update-label" for="update-comment"
-                  >コメント</label
-                >
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="upate_duration"
-                  type="number"
-                  step="15"
-                  min="15"
-                  max="120"
-                  v-model.number="duration"
-                  value="this.task.duration"
-                />
-                <label class="update-label" for="update-duration"
-                  >所要時間</label
-                >
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
-        <div
-          v-on:click="deleteTask(id)"
-          class="waves-effect waves-light btn modal-close"
-          v-if="!this.task.assigned"
-        >
-          削除
-        </div>
-        <div
-          v-on:click="updateTask(id)"
-          class="waves-effect waves-light btn modal-close"
-          v-if="!this.task.assigned"
-        >
-          更新
-        </div>
-        <div
-          v-on:click="doneTask(id)"
-          class="waves-effect waves-light btn modal-close"
-        >
-          完了
-        </div>
-      </div>
-    </div>
 
     <!-- タスクアサインモーダル -->
     <div id="assignTaskModal" class="modal">
@@ -584,6 +462,37 @@ export default {
     this.fetchSchedules();
   },
   methods: {
+    openConfirmDeleteTask() {
+      this.$confirm(
+        `タスク「${this.form.content}」を本当に削除してよろしいですか？`,
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              this.deleteTask();
+              done();
+            } else {
+              done();
+            }
+          },
+        }
+      )
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '削除しました。',
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'タスクの削除をキャンセルしました。',
+          });
+        });
+    },
     contentClick(e) {
       console.log(e, 'content click');
     },
@@ -702,30 +611,16 @@ export default {
           }
         );
     },
-    deleteTask: function(task_id) {
-      axios
-        .delete('/api/tasks/' + task_id, {
-          task: {
-            content: this.content,
-            comment: this.comment,
-            duration: this.duration,
-          },
-        })
-        .then(
-          (response) => {
-            if (response.status === 200) {
-              this.tasks = reject(this.tasks, ['id', task_id]);
-            }
-            this.content = '';
-            this.comment = '';
-            this.duration = '';
-            this.completed = '';
-            this.fetchTasks();
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+    deleteTask: function() {
+      axios.delete('/api/tasks/' + this.task_id).then(
+        (response) => {
+          this.tasks_working.splice(this.tasks_working_index, 1);
+          this.dialogShowTaskVisible = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     },
     dialogCreateTask: function() {
       this.dialogCreateTaskVisible = true;

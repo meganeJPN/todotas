@@ -47,7 +47,7 @@ class Api::TasksController < ApplicationController
       return render json: @task.errors, status: :unprocessable_entity
     end
     if @task.destroy 
-      render status: 200, json: {status: 200}
+      render :show, status: :ok
     end
 
 
