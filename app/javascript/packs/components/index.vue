@@ -237,12 +237,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogShowTaskVisible = false">Cancel</el-button>
         <el-button type="danger" @click="openConfirmDeleteTask">削除</el-button>
-        <el-button type="primary" @click="updateTask">更新</el-button
-        ><template>
-          <el-button type="text" @click="openConfirmDeleteTask"
-            >Click to open the Message Box</el-button
-          >
-        </template>
+        <el-button type="primary" @click="updateTask">更新</el-button>
       </span>
     </el-dialog>
 
@@ -568,6 +563,11 @@ export default {
             this.form.content = '';
             this.form.comment = '';
             this.form.duration = 15;
+            this.$notify({
+              title: 'Success',
+              type: 'success',
+              message: 'タスクを作成しました。',
+            });
           },
           (error) => {
             console.log(error);
@@ -579,6 +579,11 @@ export default {
         (response) => {
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
+          this.$notify({
+            title: 'Success',
+            type: 'success',
+            message: 'タスクを完了しました。',
+          });
         },
         (error) => {
           console.log(error);
@@ -607,6 +612,11 @@ export default {
             this.form.comment = '';
             this.form.duration = 15;
             this.dialogShowTaskVisible = false;
+            this.$notify({
+              title: 'Success',
+              type: 'success',
+              message: 'タスクを更新しました。',
+            });
           },
           (error) => {
             console.log(error);
@@ -626,9 +636,6 @@ export default {
     },
     dialogCreateTask: function() {
       this.dialogCreateTaskVisible = true;
-      this.form.content = '';
-      this.form.duration = 15;
-      this.form.comment = '';
     },
     dialogShowTask: function(index, task) {
       console.log('shoTaskだよ');
