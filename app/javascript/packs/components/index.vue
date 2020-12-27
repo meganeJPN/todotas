@@ -481,13 +481,15 @@ export default {
         }
       )
         .then(() => {
-          this.$message({
+          this.$notify({
+            title: 'Success',
             type: 'success',
-            message: '削除しました。',
+            message: 'タスクを削除しました。',
           });
         })
         .catch(() => {
-          this.$message({
+          this.$notify({
+            title: 'Info',
             type: 'info',
             message: 'タスクの削除をキャンセルしました。',
           });
