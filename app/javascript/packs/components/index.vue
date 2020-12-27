@@ -26,10 +26,8 @@
           </el-table-column>
           <el-table-column label="">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="dialogShowTask(scope.$index, scope.row)"
-                >Edit</el-button
+              <el-button size="mini" @click="doneTask(scope.$index, scope.row)"
+                >Finish!!</el-button
               >
             </template>
           </el-table-column>
@@ -38,7 +36,7 @@
       <el-tab-pane
         ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
 
-        <el-table :data="tasks_working" style="width: 100%">
+        <el-table :data="tasks_finished" style="width: 100%">
           <el-table-column label="Name" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -656,20 +654,20 @@ export default {
           (response) => {
             this.tasks_working.unshift(response.data.task);
             this.tasks_not_assigned.unshift(response.data.task);
-            this.content = '';
-            this.comment = '';
-            this.duration = '';
+            this.form.content = '';
+            this.form.comment = '';
+            this.form.duration = 15;
           },
           (error) => {
             console.log(error);
           }
         );
     },
-    doneTask: function(task_id) {
-      axios.put('/api/tasks/' + task_id, { task: { completed: true } }).then(
+    doneTask: function(index, task) {
+      axios.patch('/api/tasks/' + task.id, { task: { completed: true } }).then(
         (response) => {
-          this.moveFinishedTask(task_id);
-          this.fetchTasks();
+          this.tasks_working.splice(index, 1);
+          this.tasks_finished.unshift(response.data.task);
         },
         (error) => {
           console.log(error);
@@ -728,20 +726,6 @@ export default {
             console.log(error);
           }
         );
-    },
-    moveFinishedTask: function(task_id) {
-      var el = document.querySelector('#row_task_' + task_id);
-      console.log('el');
-      console.log(el);
-      console.log(el.classList);
-      var el_clone = el.cloneNode(true);
-      el.classList.add('display_none');
-      el_clone.getElementsByTagName('span')[0].classList.add('line-through');
-      el_clone
-        .getElementsByTagName('span')[0]
-        .classList.remove('word-color-black');
-      var li = document.querySelector('#finished-tasks > ul > li:first-child');
-      document.querySelector('#finished-tasks > ul').insertBefore(el_clone, li);
     },
     dialogCreateTask: function() {
       this.dialogCreateTaskVisible = true;
