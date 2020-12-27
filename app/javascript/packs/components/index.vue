@@ -13,7 +13,9 @@
                 <p>所要時間: {{ scope.row.duration }}分</p>
                 <div slot="reference" class="name-wrapper">
                   <i class="el-icon-time"></i
-                  ><el-button type="text" @click="dialogFormVisible = true"
+                  ><el-button
+                    type="text"
+                    @click="dialogShowTask(scope.$index, scope.row)"
                     ><span style="margin-left: 10px">{{
                       scope.row.content
                     }}</span></el-button
@@ -26,11 +28,8 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="dialogShowTask(scope.$index, scope.row)"
                 >Edit</el-button
-              >
-              <el-button type="text" @click="dialogFormVisible = true"
-                >open a Form nested Dialog</el-button
               >
             </template>
           </el-table-column>
@@ -56,7 +55,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="dialogShowTask(scope.$index, scope.row)"
                 >Edit</el-button
               >
 
@@ -77,11 +76,12 @@
           type="primary"
           icon="el-icon-edit"
           circle
-          @click="dialogFormVisible = true"
+          @click="dialogCreateTask()"
         ></el-button
       ></el-row>
     </el-footer>
     <!-- リスト表示部分 -->
+
     <template>
       <div>
         <el-radio-group v-model="radio1">
@@ -92,10 +92,7 @@
         </el-radio-group>
       </div>
     </template>
-    <template>
-      <div class="block">
-        <el-slider v-model="value" range :marks="marks"> </el-slider></div
-    ></template>
+
     <div class="dateControl">
       <div class="row">
         <div class="col s12">
@@ -155,10 +152,10 @@
         </tbody>
       </table>
     </div>
-
+    <!-- タスク追加モーダル -->
     <el-dialog
       title="新規タスク作成"
-      :visible.sync="dialogFormVisible"
+      :visible.sync="dialogCreateTaskVisible"
       width="80%"
     >
       <el-form :model="form">
@@ -185,7 +182,7 @@
         <el-form-item label="メモ" :label-width="formLabelWidth">
           <el-input
             type="textarea"
-            v-model="form.commnet"
+            v-model="form.comment"
             autocomplete="off"
             maxlength="400"
             show-word-limit
@@ -195,8 +192,53 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button @click="dialogCreateTaskVisible = false">Cancel</el-button>
         <el-button type="primary" @click="createTask">Confirm</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- タスク詳細モーダル -->
+    <el-dialog
+      title="タスク詳細"
+      :visible.sync="dialogShowTaskVisible"
+      width="80%"
+    >
+      <el-form :model="form">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+          <el-input
+            v-model="form.content"
+            autocomplete="off"
+            maxlength="50"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="所要時間" :label-width="formLabelWidth">
+          <div class="duration-slider">
+            <el-slider
+              v-model="form.duration"
+              :step="15"
+              :marks="marks_duration"
+              :min="15"
+              :max="120"
+            >
+            </el-slider>
+          </div>
+        </el-form-item>
+        <el-form-item label="メモ" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            v-model="form.comment"
+            autocomplete="off"
+            maxlength="400"
+            show-word-limit
+            resize="none"
+            rows="10"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogShowTaskVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="updateTask">Confirm</el-button>
       </span>
     </el-dialog>
 
@@ -403,6 +445,7 @@ export default {
       start_date: '',
       start_time: '',
       task_id: '',
+      tasks_working_index: '',
       time_span: [],
       activeName: 'first',
       radio1: 'New York',
@@ -410,20 +453,10 @@ export default {
       radio3: 'New York',
       radio4: 'New York',
       count: 0,
-      dialogFormVisible: false,
+      dialogCreateTaskVisible: false,
+      dialogShowTaskVisible: false,
       value1: 0,
-      value: [30, 60],
-      marks: {
-        0: '0°C',
-        8: '8°C',
-        37: '37°C',
-        50: {
-          style: {
-            color: '#1989FA',
-          },
-          label: this.$createElement('strong', '50%'),
-        },
-      },
+
       marks_duration: {
         0: '0',
         15: '15',
@@ -436,8 +469,8 @@ export default {
       },
       form: {
         content: '',
-        duration: 0,
-        commnet: '',
+        duration: 15,
+        comment: '',
       },
       formLabelWidth: '120px',
       tableData: [
@@ -460,6 +493,29 @@ export default {
           date: '2016-05-01',
           name: 'Tom',
           address: 'No. 189, Grove St, Los Angeles',
+        },
+      ],
+      mockSwipeList: [
+        {
+          id: 0,
+          key1: 'key1',
+          key2: 'key2',
+          key3: 'key3',
+          key4: 'key4',
+        },
+        {
+          id: 1,
+          key1: 'key1',
+          key2: 'key2',
+          key3: 'key3',
+          key4: 'key4',
+        },
+        {
+          id: 2,
+          key1: 'key1',
+          key2: 'key2',
+          key3: 'key3',
+          key4: 'key4',
         },
       ],
       time_list: [
@@ -530,6 +586,21 @@ export default {
     this.fetchSchedules();
   },
   methods: {
+    contentClick(e) {
+      console.log(e, 'content click');
+    },
+    itemClick(e) {
+      console.log(e, 'item click');
+    },
+    itemDblClick(e) {
+      console.log(e, 'item double click');
+    },
+    fbClick(e) {
+      console.log(e, 'First Button Click');
+    },
+    sbClick(e) {
+      console.log(e, 'Second Button Click');
+    },
     load: function() {
       this.count += 2;
     },
@@ -605,23 +676,28 @@ export default {
         }
       );
     },
-    updateTask: function(task_id) {
-      if (!this.content || !this.duration) return;
+    updateTask: function() {
+      if (!this.form.content || !this.form.duration) return;
       axios
-        .patch('/api/tasks/' + task_id, {
+        .patch('/api/tasks/' + this.task_id, {
           task: {
-            content: this.content,
-            comment: this.comment,
-            duration: this.duration,
+            content: this.form.content,
+            comment: this.form.comment,
+            duration: this.form.duration,
           },
         })
         .then(
           (response) => {
-            document.getElementById('task_' + task_id).innerText =
+            this.tasks_working[this.tasks_working_index].content =
               response.data.task.content;
-            this.content = '';
-            this.comment = '';
-            this.duration = '';
+            this.tasks_working[this.tasks_working_index].duration =
+              response.data.task.duration;
+            this.tasks_working[this.tasks_working_index].comment =
+              response.data.task.comment;
+            this.form.content = '';
+            this.form.comment = '';
+            this.form.duration = 15;
+            this.dialogShowTaskVisible = false;
           },
           (error) => {
             console.log(error);
@@ -667,27 +743,21 @@ export default {
       var li = document.querySelector('#finished-tasks > ul > li:first-child');
       document.querySelector('#finished-tasks > ul').insertBefore(el_clone, li);
     },
-    showTask: function(task_id) {
+    dialogCreateTask: function() {
+      this.dialogCreateTaskVisible = true;
+      this.form.content = '';
+      this.form.duration = 15;
+      this.form.comment = '';
+    },
+    dialogShowTask: function(index, task) {
       console.log('shoTaskだよ');
-      console.log(task_id);
-      var elements = document.querySelectorAll('.update-label');
-      elements.forEach(function(element) {
-        element.classList.add('active');
-      });
-
-      axios.get('/api/tasks/' + task_id).then(
-        (response) => {
-          this.task = response.data.task;
-          this.id = this.task.id;
-          this.content = this.task.content;
-          this.comment = this.task.comment;
-          this.duration = this.task.duration;
-          console.log(this.task);
-        },
-        (error) => {
-          console.log(error, response);
-        }
-      );
+      console.log(index, task);
+      this.dialogShowTaskVisible = true;
+      this.form.content = task.content;
+      this.form.duration = task.duration;
+      this.form.comment = task.comment;
+      this.tasks_working_index = index;
+      this.task_id = task.id;
     },
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
