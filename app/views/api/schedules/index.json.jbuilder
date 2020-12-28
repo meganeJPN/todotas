@@ -11,3 +11,6 @@ end
 json.set! :s_hide_list do
   json.array! @s_hide_list
 end
+json.set! :schedule_table do
+  json.array! @schedule_table
+end

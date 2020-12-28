@@ -26,9 +26,12 @@
           </el-table-column>
           <el-table-column label="">
             <template slot-scope="scope">
-              <el-button size="mini" @click="doneTask(scope.$index, scope.row)"
-                >Finish!!</el-button
-              >
+              <el-button
+                type="primary"
+                icon="el-icon-check"
+                size="mini"
+                @click="doneTask(scope.$index, scope.row)"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,6 +71,29 @@
         </el-table></el-tab-pane
       >
     </el-tabs>
+    <el-row>
+      <div class="dateControl">
+        <div class="row">
+          <div class="col s12">
+            <a
+              id="next-day"
+              href="#!"
+              v-on:click="currentDateNext(current_date)"
+              ><el-button type="primary" icon="el-icon-arrow-left"></el-button
+            ></a>
+            <a id="today" href="#!" v-on:click="currentDateToday()"
+              ><el-button type="primary">Today</el-button></a
+            >
+            <a
+              id="before-day"
+              href="#!"
+              v-on:click="currentDateBefore(current_date)"
+              ><el-button type="primary" icon="el-icon-arrow-right"></el-button
+            ></a>
+          </div>
+        </div>
+      </div>
+    </el-row>
     <el-footer style="text-align: right; font-size: 12px">
       <el-row
         ><el-button
@@ -78,6 +104,18 @@
         ></el-button
       ></el-row>
     </el-footer>
+    <el-table
+      :data="tableData"
+      :span-method="objectSpanMethod"
+      border
+      style="width: 100%; margin-top: 20px"
+    >
+      <el-table-column prop="id" label="ID" width="180"> </el-table-column>
+      <el-table-column prop="name" label="Name"> </el-table-column>
+      <el-table-column prop="amount1" label="Amount 1"> </el-table-column>
+      <el-table-column prop="amount2" label="Amount 2"> </el-table-column>
+      <el-table-column prop="amount3" label="Amount 3"> </el-table-column>
+    </el-table>
     <!-- リスト表示部分 -->
 
     <template>
@@ -91,33 +129,6 @@
       </div>
     </template>
 
-    <div class="dateControl">
-      <div class="row">
-        <div class="col s12">
-          <a
-            id="next-day"
-            　class="btn waves-effect waves-light"
-            href="#!"
-            v-on:click="currentDateNext(current_date)"
-            ><i class="material-icons">navigate_before</i></a
-          >
-          <a
-            id="today"
-            class="btn waves-effect waves-light"
-            href="#!"
-            v-on:click="currentDateToday()"
-            >Today</a
-          >
-          <a
-            id="before-day"
-            class="btn waves-effect waves-light"
-            href="#!"
-            v-on:click="currentDateBefore(current_date)"
-            ><i class="material-icons">navigate_next</i></a
-          >
-        </div>
-      </div>
-    </div>
     <div class="schedule">
       <table class="schedule-list" border="1">
         <thead>
@@ -389,6 +400,15 @@ export default {
           key4: 'key4',
         },
       ],
+      test_data: [
+        { field1: 'A', field2: 'a', field3: '1' },
+        { field1: 'A', field2: 'a', field3: '2' },
+        { field1: 'A', field2: 'b', field3: '3' },
+      ],
+      option: [
+        { index: 0, field: 'field1' },
+        { index: 1, field: 'field2' },
+      ],
       time_list: [
         '0800',
         '0815',
@@ -449,6 +469,43 @@ export default {
         '2200',
       ],
       schedule_list: [],
+      tableData: [
+        {
+          id: '12987122',
+          name: 'Tom',
+          amount1: '234',
+          amount2: '3.2',
+          amount3: 10,
+        },
+        {
+          id: '12987123',
+          name: 'Tom',
+          amount1: '165',
+          amount2: '4.43',
+          amount3: 12,
+        },
+        {
+          id: '12987124',
+          name: 'Tom',
+          amount1: '324',
+          amount2: '1.9',
+          amount3: 9,
+        },
+        {
+          id: '12987125',
+          name: 'Tom',
+          amount1: '621',
+          amount2: '2.2',
+          amount3: 17,
+        },
+        {
+          id: '12987126',
+          name: 'Tom',
+          amount1: '539',
+          amount2: '4.1',
+          amount3: 15,
+        },
+      ],
     };
   },
   mounted: function() {
@@ -457,6 +514,21 @@ export default {
     this.fetchSchedules();
   },
   methods: {
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        if (rowIndex % 2 === 0) {
+          return {
+            rowspan: 2,
+            colspan: 1,
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0,
+          };
+        }
+      }
+    },
     openConfirmDeleteTask() {
       this.$confirm(
         `タスク「${this.form.content}」を本当に削除してよろしいですか？`,
@@ -767,7 +839,6 @@ export default {
       this.time_list.forEach(function(time) {
         let tr_element = document.getElementById(time);
         if (document.getElementById(`row_s_${time}`) === null) {
-          console.log(`row_s_${time}の時は削除`);
           let td_schedule = document.createElement('td');
           let td_assign = document.getElementById(`row_a_${time}`);
           td_schedule.id = `row_s_${time}`;
@@ -775,10 +846,7 @@ export default {
         } else {
           document.getElementById(`row_s_${time}`).innerText = '';
           document.getElementById(`row_s_${time}`).setAttribute('rowSpan', 1);
-          console.log(`row_s_${time}の時はリセット`);
-          console.log(document.getElementById(`row_s_${time}`));
         }
-        console.log(tr_element);
       });
     },
 

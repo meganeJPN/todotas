@@ -4,10 +4,45 @@ class Api::SchedulesController < ApplicationController
   def index
     @s_show_list = []
     @s_hide_list = []
+    @schedule_table =[]
     @schedules = Schedule.where(start_date: params[:start_date])
-
+    s_rowspan = {}
     TIME_PITCH_NUM.times.map.each_with_index do |value, i|
-      Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+TIME_PITCH.minutes*i
+      time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+TIME_PITCH.minutes*i
+      s_column = {}
+      s_column["time"] = time.strftime("%H") + time.strftime("%M")
+      schedule =  Schedule.find_by(start_time: time)
+      if schedule
+        s_column["schedule"] = schedule
+        task = Task.find(schedule.task_id)
+        s_column["task"] = task
+        s_column["rowspan"] = task.duration/TIME_PITCH
+        
+        s_rowspan["start_index"] = i;
+        s_rowspan["rowspan"] = task.duration/TIME_PITCH
+        logger.debug("s_rowspanに代入完了")
+        logger.debug(s_rowspan.present?)
+        logger.debug(s_rowspan["start_index"])
+        logger.debug(s_rowspan["rowspan"])
+      else
+        s_column["schedule"] = ""
+        s_column["task"] = ""
+        logger.debug(time)
+        logger.debug("スケジュールじゃない時")
+        logger.debug(s_rowspan.present?)
+        if s_rowspan.present? 
+          logger.debug("i = #{i}")
+          logger.debug(s_rowspan)
+          if i > s_rowspan["start_index"] && i < s_rowspan["start_index"] + s_rowspan["rowspan"]
+            s_column["rowspan"] = 0
+          else #s_rowspanは設定されていたけど、rowspan =0 にする範囲が終わった時
+            s_column["rowspan"] = 1
+          end
+        else # rowspanで結合されない通常のrow
+          s_column["rowspan"] = 1
+        end
+      end
+      @schedule_table.push(s_column)
     end
 
     @schedules.each do |schedule|
