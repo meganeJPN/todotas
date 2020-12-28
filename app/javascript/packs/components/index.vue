@@ -142,7 +142,7 @@
                 icon="el-icon-plus"
                 size="mini"
                 circle
-                @click="dialogAssignTask()"
+                @click="dialogAssignTask(scope.$index, scope.row)"
               ></el-button>
             </template>
           </el-table-column>
@@ -167,19 +167,6 @@
         ></el-button
       ></el-row>
     </el-footer>
-
-
-    <template>
-      <div>
-        <el-radio-group v-model="radio1">
-          <el-radio-button label="New York"></el-radio-button>
-          <el-radio-button label="Washington"></el-radio-button>
-          <el-radio-button label="Los Angeles"></el-radio-button>
-          <el-radio-button label="Chicago"></el-radio-button>
-        </el-radio-group>
-      </div>
-    </template>
-
     <!-- 
      -----------------------------
 
@@ -296,20 +283,17 @@
       :visible.sync="dialogAssignTaskVisible"
       width="80%"
     >
-      <el-form :model="form">
+      <el-form :model="form_schedule">
       <el-form-item label="開始時間" :label-width="formLabelWidth">
       <div>
-        <el-radio-group v-model="radio1">
-          <el-radio-button label="New York"></el-radio-button>
-          <el-radio-button label="Washington"></el-radio-button>
-          <el-radio-button label="Los Angeles"></el-radio-button>
-          <el-radio-button label="Chicago"></el-radio-button>
+        <el-radio-group v-model="form_schedule.start_time">
+          <el-radio-button v-for="time in time_span" :label="time"></el-radio-button>
         </el-radio-group>
       </div>
       </el-form-item>
       <el-form-item label="アサインするタスク" :label-width="formLabelWidth">
         <div>
-          <el-select v-model="task_id" placeholder="Select" v-on:change="formInsertTask()">
+          <el-select v-model="form_schedule.task_id" placeholder="Select" v-on:change="formInsertTask()">
             <el-option
               v-for="task_working in tasks_working"
               :key="task_working.id"
@@ -417,6 +401,10 @@ export default {
         duration: 15,
         comment: '',
       },
+      form_schedule:{
+        start_time: '',
+        task_id:''
+      },
       formLabelWidth: '160px',
        cities: [{
           value: 'Beijing',
@@ -452,7 +440,7 @@ export default {
   },
   formInsertTask: function(){
     let form_task;
-    form_task = this.tasks_working.find(t => t.id === this.task_id)
+    form_task = this.tasks_working.find(t => t.id === this.form_schedule.task_id)
     this.form.content = form_task.content
     this.form.comment = form_task.comment
     this.form.duration = form_task.duration
@@ -679,8 +667,24 @@ export default {
       this.tasks_working_index = index;
       this.task_id = task.id;
     },
-     dialogAssignTask: function() {
-      this.dialogAssignTaskVisible = true;
+     dialogAssignTask: function(index , row) {
+     console.log(index)
+     console.log(row)
+     console.log(this.current_date)
+     console.log(Number(row.time.slice(0,2)))
+     console.log(Number(row.time.slice(-2)))
+     let time = this.current_date.setHours(Number(row.time.slice(0,2)));
+     time = new Date(this.current_date.setMinutes(Number(row.time.slice(-2))));
+     console.log("time↓")
+     console.log(time)
+      this.time_span[0] = time.getHours().toString().padStart(2,'0') +":" + time.getMinutes().toString().padStart(2,'0');
+     for (let i =1;i<4; i++){
+      let tmp_time = new Date(time.setMinutes(time.getMinutes()+15))
+      console.log("tmp_time↓")
+      console.log(tmp_time)
+      this.time_span[i] = tmp_time.getHours().toString().padStart(2,'0') +":" + tmp_time.getMinutes().toString().padStart(2,'0')
+     }
+     this.dialogAssignTaskVisible = true;
     },
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);

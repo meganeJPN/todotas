@@ -10,7 +10,7 @@ class Api::SchedulesController < ApplicationController
     TIME_PITCH_NUM.times.map.each_with_index do |value, i|
       time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+TIME_PITCH.minutes*i
       s_column = {}
-      s_column["time"] = time.strftime("%H") + time.strftime("%M")
+      s_column["time"] = time.strftime("%H") +":"+ time.strftime("%M")
       schedule =  @schedules.find_by(start_time: time)
       if schedule
         s_column["schedule"] = schedule
