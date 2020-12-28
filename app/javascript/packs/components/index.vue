@@ -142,7 +142,7 @@
                 icon="el-icon-plus"
                 size="mini"
                 circle
-                @click="dialogCreateTask()"
+                @click="dialogAssignTask()"
               ></el-button>
             </template>
           </el-table-column>
@@ -293,16 +293,41 @@
    
     <el-dialog
       title="タスクアサイン"
-      :visible.sync="dialogAssginTaskVisible"
+      :visible.sync="dialogAssignTaskVisible"
       width="80%"
     >
       <el-form :model="form">
+      <el-form-item label="開始時間" :label-width="formLabelWidth">
+      <div>
+        <el-radio-group v-model="radio1">
+          <el-radio-button label="New York"></el-radio-button>
+          <el-radio-button label="Washington"></el-radio-button>
+          <el-radio-button label="Los Angeles"></el-radio-button>
+          <el-radio-button label="Chicago"></el-radio-button>
+        </el-radio-group>
+      </div>
+      </el-form-item>
+      <el-form-item label="アサインするタスク" :label-width="formLabelWidth">
+        <div>
+          <el-select v-model="task_id" placeholder="Select" v-on:change="formInsertTask()">
+            <el-option
+              v-for="task_working in tasks_working"
+              :key="task_working.id"
+              :label="task_working.content"
+              :value="task_working.id">
+              <span style="float: left">{{ task_working.content }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ task_working.duration }}分</span>
+            </el-option>
+          </el-select>
+        </div>
+      </el-form-item>
         <el-form-item label="タスク内容" :label-width="formLabelWidth">
           <el-input
             v-model="form.content"
             autocomplete="off"
             maxlength="50"
             show-word-limit
+            readonly
           ></el-input>
         </el-form-item>
         <el-form-item label="所要時間" :label-width="formLabelWidth">
@@ -313,6 +338,7 @@
               :marks="marks_duration"
               :min="15"
               :max="120"
+              :disabled="true"
             >
             </el-slider>
           </div>
@@ -326,12 +352,13 @@
             show-word-limit
             resize="none"
             rows="10"
+            readonly
           ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogCreateTaskVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="createTask">作成</el-button>
+        <el-button @click="debugMethod()">キャンセル</el-button>
+        <el-button type="primary" @click="createSchedule">スケジュールに追加</el-button>
       </span>
     </el-dialog>
     
@@ -351,7 +378,7 @@ export default {
       tasks_assigned: [],
       task: {},
       id: '',
-      content: '',
+      task_content: '',
       comment: '',
       duration: '',
       completed: '',
@@ -372,7 +399,7 @@ export default {
       radio4: 'New York',
       dialogCreateTaskVisible: false,
       dialogShowTaskVisible: false,
-      dialogAssginTaskVisible: false,
+      dialogAssignTaskVisible: false,
       value1: 0,
 
       marks_duration: {
@@ -390,7 +417,27 @@ export default {
         duration: 15,
         comment: '',
       },
-      formLabelWidth: '120px',
+      formLabelWidth: '160px',
+       cities: [{
+          value: 'Beijing',
+          label: 'Beijing'
+        }, {
+          value: 'Shanghai',
+          label: 'Shanghai'
+        }, {
+          value: 'Nanjing',
+          label: 'Nanjing'
+        }, {
+          value: 'Chengdu',
+          label: 'Chengdu'
+        }, {
+          value: 'Shenzhen',
+          label: 'Shenzhen'
+        }, {
+          value: 'Guangzhou',
+          label: 'Guangzhou'
+        }],
+        value: ''
     };
   },
   mounted: function() {
@@ -399,6 +446,17 @@ export default {
     this.fetchSchedules();
   },
   methods: {
+  debugMethod: function(){
+  this.dialogAssignTaskVisible = false
+  console.log(this.task_content)
+  },
+  formInsertTask: function(){
+    let form_task;
+    form_task = this.tasks_working.find(t => t.id === this.task_id)
+    this.form.content = form_task.content
+    this.form.comment = form_task.comment
+    this.form.duration = form_task.duration
+  },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         if (rowIndex % 4 === 0) {
@@ -620,6 +678,9 @@ export default {
       this.form.comment = task.comment;
       this.tasks_working_index = index;
       this.task_id = task.id;
+    },
+     dialogAssignTask: function() {
+      this.dialogAssignTaskVisible = true;
     },
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
