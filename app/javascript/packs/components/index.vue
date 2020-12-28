@@ -94,6 +94,29 @@
         </div>
       </div>
     </el-row>
+    <div class="schedule">
+      <el-table
+        :data="schedule_table"
+        :span-method="objectSpanMethod"
+        border
+        style="width: 100%; margin-top: 20px"
+      >
+        <el-table-column prop="time" label="時間" width="100">
+        </el-table-column>
+        <el-table-column prop="task.content" label="タスク"> </el-table-column>
+        <el-table-column label="">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                icon="el-icon-check"
+                size="mini"
+                @click="doneTask(scope.$index, scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-footer style="text-align: right; font-size: 12px">
       <el-row
         ><el-button
@@ -104,18 +127,7 @@
         ></el-button
       ></el-row>
     </el-footer>
-    <el-table
-      :data="tableData"
-      :span-method="objectSpanMethod"
-      border
-      style="width: 100%; margin-top: 20px"
-    >
-      <el-table-column prop="id" label="ID" width="180"> </el-table-column>
-      <el-table-column prop="name" label="Name"> </el-table-column>
-      <el-table-column prop="amount1" label="Amount 1"> </el-table-column>
-      <el-table-column prop="amount2" label="Amount 2"> </el-table-column>
-      <el-table-column prop="amount3" label="Amount 3"> </el-table-column>
-    </el-table>
+
     <!-- リスト表示部分 -->
 
     <template>
@@ -129,38 +141,6 @@
       </div>
     </template>
 
-    <div class="schedule">
-      <table class="schedule-list" border="1">
-        <thead>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="schedule-tbody">
-          <tr v-for="(t, index) in time_list" v-bind:id="t">
-            <td v-if="t.slice(-2) === '00'" rowspan="4" class="time">
-              {{ strToTime(t) }}
-            </td>
-            <td
-              v-if="t.slice(-2) === '00'"
-              rowspan="4"
-              class="assign"
-              v-bind:id="'row_a_' + t"
-            >
-              <a
-                id="add-task"
-                class="btn-floating  waves-effect waves-light orange modal-trigger"
-                href="#assignTaskModal"
-                v-on:click="createScheduleModal(t)"
-                ><i class="material-icons">add</i></a
-              >
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
     <!-- タスク追加モーダル -->
     <el-dialog
       title="新規タスク作成"
@@ -322,6 +302,7 @@ export default {
       completed: '',
       current_date: '',
       schedules: [],
+      schedule_table: [],
       s_show_list: [],
       s_hiide_list: [],
       start_date: '',
@@ -516,15 +497,32 @@ export default {
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
-        if (rowIndex % 2 === 0) {
+        if (rowIndex % 4 === 0) {
           return {
-            rowspan: 2,
+            rowspan: 4,
             colspan: 1,
           };
         } else {
           return {
             rowspan: 0,
-            colspan: 0,
+            colspan: 1,
+          };
+        }
+      } else if (columnIndex === 1) {
+        return {
+          rowspan: this.schedule_table[rowIndex].rowspan,
+          colspan: 1,
+        };
+      } else {
+        if (rowIndex % 4 === 0) {
+          return {
+            rowspan: 4,
+            colspan: 1,
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 1,
           };
         }
       }
@@ -725,71 +723,10 @@ export default {
         .get('/api/schedules', { params: { start_date: current_date_str } })
         .then(
           (response) => {
-            for (let i = 0; i < response.data.schedules.length; i++) {
-              let start_time = new Date(response.data.schedules[i].start_time);
-              response.data.schedules[i].start_time =
-                start_time
-                  .getHours()
-                  .toString()
-                  .padStart(2, '0') +
-                ':' +
-                start_time
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, 0);
-              console.log(response.data.schedules[i].start_time);
-              let end_time = new Date(response.data.schedules[i].end_time);
-              response.data.schedules[i].end_time =
-                end_time
-                  .getHours()
-                  .toString()
-                  .padStart(2, '0') +
-                ':' +
-                end_time
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, 0);
-
-              this.schedules.push(response.data.schedules[i]);
+            this.schedule_table.length = 0;
+            for (let i = 0; i < response.data.schedule_table.length; i++) {
+              this.schedule_table.push(response.data.schedule_table[i]);
             }
-            this.createBlankScheduleTable();
-            for (let j = 0; j < response.data.s_show_list.length; j++) {
-              console.log('要素採れた？');
-              console.log(response.data.s_show_list[j].row_id);
-              console.log('row_s_' + response.data.s_show_list[j].row_id);
-              console.log(
-                document.getElementById(
-                  'row_s_' + response.data.s_show_list[j].row_id
-                )
-              );
-              document.getElementById(
-                'row_s_' + response.data.s_show_list[j].row_id
-              ).innerText = response.data.s_show_list[j].task.content;
-
-              this.s_show_list.push(response.data.s_show_list[j]);
-              document
-                .getElementById('row_s_' + response.data.s_show_list[j].row_id)
-                .setAttribute('rowSpan', response.data.s_show_list[j].rowspan);
-              document.getElementById(
-                'row_s_' + response.data.s_show_list[j].row_id
-              ).className = 'blue-grey lighten-4';
-              this.s_show_list.push(response.data.s_show_list[j]);
-            }
-            response.data.s_hide_list.forEach(function(row_h_id) {
-              console.log('削除する要素は');
-              console.log(document.getElementById('row_s_' + row_h_id));
-              let remove_el = document.getElementById('row_s_' + row_h_id);
-              if (remove_el) {
-                console.log('本当に消えるのは');
-                console.log(document.getElementById('row_s_' + row_h_id));
-                document.getElementById('row_s_' + row_h_id).remove();
-              }
-            });
-            this.s_hide_list = response.data.s_hide_list;
-            console.log('this.s_show_list');
-            console.log(this.s_show_list);
-            console.log('this.s_show_list');
-            console.log(this.s_hide_list);
           },
           (error) => {
             console.log(error, response);
@@ -926,6 +863,7 @@ export default {
 }
 
 .schedule {
+  margin-bottom: 20px;
   height: 30vh;
   overflow: scroll;
   /* IE, Edge 対応 */
@@ -947,6 +885,8 @@ td.assign {
   width: 80px;
 }
 .dateControl {
+  margin-top: 20px;
+  margin-bottom: 20px;
   text-align: center;
 }
 .schedule_bar {
