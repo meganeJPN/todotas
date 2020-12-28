@@ -3,9 +3,16 @@
 <template>
   <div>
     <el-tabs type="border-card">
+     <!-- 
+     -----------------------------
+
+      作業中タスク表示タブ
+
+     -----------------------------
+    -->
       <el-tab-pane>
         <span slot="label"><i class="el-icon-edit-outline"></i>Working</span>
-        <el-table :data="tasks_working" style="width: 100%">
+        <el-table :data="tasks_working" style="width: 100%" :show-header="false">
           <el-table-column label="" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -36,10 +43,17 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
+      <!-- 
+     -----------------------------
+
+      完了タスク表示タブ
+
+     -----------------------------
+    -->
       <el-tab-pane
         ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
 
-        <el-table :data="tasks_finished" style="width: 100%">
+        <el-table :data="tasks_finished" style="width: 100%" :show-header="false">
           <el-table-column label="Name" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -71,6 +85,13 @@
         </el-table></el-tab-pane
       >
     </el-tabs>
+    <!-- 
+     -----------------------------
+
+      日付操作ボタン表示部分
+
+     -----------------------------
+    -->
     <el-row>
       <div class="dateControl">
         <div class="row">
@@ -93,7 +114,17 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <p v-model="current_date">{{current_date}}</p>
+      </div>
     </el-row>
+     <!-- 
+     -----------------------------
+
+      スケジュール表示部分
+
+     -----------------------------
+    -->
     <div class="schedule">
       <el-table
         :data="schedule_table"
@@ -101,22 +132,31 @@
         border
         style="width: 100%; margin-top: 20px"
       >
-        <el-table-column prop="time" label="時間" width="100">
+        <el-table-column prop="time" label="時間" width="80">
         </el-table-column>
         <el-table-column prop="task.content" label="タスク"> </el-table-column>
-        <el-table-column label="">
+        <el-table-column label="" width="80">
             <template slot-scope="scope">
               <el-button
                 type="primary"
-                icon="el-icon-check"
+                icon="el-icon-plus"
                 size="mini"
-                @click="doneTask(scope.$index, scope.row)"
+                circle
+                @click="dialogCreateTask()"
               ></el-button>
             </template>
           </el-table-column>
         </el-table-column>
       </el-table>
     </div>
+
+     <!-- 
+     -----------------------------
+
+      フッター部分
+
+     -----------------------------
+    -->
     <el-footer style="text-align: right; font-size: 12px">
       <el-row
         ><el-button
@@ -128,7 +168,6 @@
       ></el-row>
     </el-footer>
 
-    <!-- リスト表示部分 -->
 
     <template>
       <div>
@@ -141,7 +180,13 @@
       </div>
     </template>
 
-    <!-- タスク追加モーダル -->
+    <!-- 
+     -----------------------------
+
+      新規タスク作成ダイアログ
+
+     -----------------------------
+    -->
     <el-dialog
       title="新規タスク作成"
       :visible.sync="dialogCreateTaskVisible"
@@ -186,7 +231,13 @@
       </span>
     </el-dialog>
 
-    <!-- タスク詳細モーダル -->
+    <!-- 
+     -----------------------------
+
+      タスク詳細ダイアログ
+
+     -----------------------------
+    -->
     <el-dialog
       title="タスク詳細"
       :visible.sync="dialogShowTaskVisible"
@@ -232,54 +283,58 @@
       </span>
     </el-dialog>
 
-    <!-- タスクアサインモーダル -->
-    <div id="assignTaskModal" class="modal">
-      <div class="modal-content">
-        <div class="row">
-          <form class="col s12">
-            <p v-for="time in this.time_span">
-              <label>
-                <input
-                  name="group1"
-                  type="radio"
-                  v-bind:value="time"
-                  v-model="start_time"
-                />
-                <span>{{ time }}</span>
-              </label>
-            </p>
-            <div class="row">
-              <div class=" col s12">
-                <label>タスクを選択</label>
-                <select class="browser-default" v-model="task_id">
-                  <option value="" disabled selected
-                    >アサインするタスクを選択してください</option
-                  >
-                  <option
-                    v-for="task_not_assigned in tasks_not_assigned"
-                    v-bind:id="'select_task_' + task_not_assigned.id"
-                    v-bind:value="task_not_assigned.id"
-                    v-if="!task_not_assigned.completed"
-                    >{{ task_not_assigned.content }} -{{
-                      task_not_assigned.duration
-                    }}分</option
-                  >
-                </select>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn">閉じる</a>
-        <div
-          v-on:click="createSchedule"
-          class="waves-effect waves-light btn modal-close"
-        >
-          完了
-        </div>
-      </div>
-    </div>
+    <!-- 
+     -----------------------------
+
+      タスクアサインダイアログ
+
+     -----------------------------
+    -->
+   
+    <el-dialog
+      title="タスクアサイン"
+      :visible.sync="dialogAssginTaskVisible"
+      width="80%"
+    >
+      <el-form :model="form">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+          <el-input
+            v-model="form.content"
+            autocomplete="off"
+            maxlength="50"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="所要時間" :label-width="formLabelWidth">
+          <div class="duration-slider">
+            <el-slider
+              v-model="form.duration"
+              :step="15"
+              :marks="marks_duration"
+              :min="15"
+              :max="120"
+            >
+            </el-slider>
+          </div>
+        </el-form-item>
+        <el-form-item label="メモ" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            v-model="form.comment"
+            autocomplete="off"
+            maxlength="400"
+            show-word-limit
+            resize="none"
+            rows="10"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCreateTaskVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="createTask">作成</el-button>
+      </span>
+    </el-dialog>
+    
   </div>
 </template>
 <script>
@@ -315,9 +370,9 @@ export default {
       radio2: 'New York',
       radio3: 'New York',
       radio4: 'New York',
-      count: 0,
       dialogCreateTaskVisible: false,
       dialogShowTaskVisible: false,
+      dialogAssginTaskVisible: false,
       value1: 0,
 
       marks_duration: {
@@ -336,157 +391,6 @@ export default {
         comment: '',
       },
       formLabelWidth: '120px',
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-02',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-04',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-01',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-      ],
-      mockSwipeList: [
-        {
-          id: 0,
-          key1: 'key1',
-          key2: 'key2',
-          key3: 'key3',
-          key4: 'key4',
-        },
-        {
-          id: 1,
-          key1: 'key1',
-          key2: 'key2',
-          key3: 'key3',
-          key4: 'key4',
-        },
-        {
-          id: 2,
-          key1: 'key1',
-          key2: 'key2',
-          key3: 'key3',
-          key4: 'key4',
-        },
-      ],
-      test_data: [
-        { field1: 'A', field2: 'a', field3: '1' },
-        { field1: 'A', field2: 'a', field3: '2' },
-        { field1: 'A', field2: 'b', field3: '3' },
-      ],
-      option: [
-        { index: 0, field: 'field1' },
-        { index: 1, field: 'field2' },
-      ],
-      time_list: [
-        '0800',
-        '0815',
-        '0830',
-        '0845',
-        '0900',
-        '0915',
-        '0930',
-        '0945',
-        '1000',
-        '1015',
-        '1030',
-        '1045',
-        '1100',
-        '1115',
-        '1130',
-        '1145',
-        '1200',
-        '1215',
-        '1230',
-        '1245',
-        '1300',
-        '1315',
-        '1330',
-        '1345',
-        '1400',
-        '1415',
-        '1430',
-        '1445',
-        '1500',
-        '1515',
-        '1530',
-        '1545',
-        '1600',
-        '1615',
-        '1630',
-        '1645',
-        '1700',
-        '1715',
-        '1730',
-        '1745',
-        '1800',
-        '1815',
-        '1830',
-        '1845',
-        '1900',
-        '1915',
-        '1930',
-        '1945',
-        '2000',
-        '2015',
-        '2030',
-        '2045',
-        '2100',
-        '2115',
-        '2130',
-        '2145',
-        '2200',
-      ],
-      schedule_list: [],
-      tableData: [
-        {
-          id: '12987122',
-          name: 'Tom',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10,
-        },
-        {
-          id: '12987123',
-          name: 'Tom',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12,
-        },
-        {
-          id: '12987124',
-          name: 'Tom',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9,
-        },
-        {
-          id: '12987125',
-          name: 'Tom',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17,
-        },
-        {
-          id: '12987126',
-          name: 'Tom',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15,
-        },
-      ],
     };
   },
   mounted: function() {
@@ -769,30 +673,6 @@ export default {
             console.log(error);
           }
         );
-    },
-    createBlankScheduleTable: function() {
-      console.log('createBlankScheduleTable呼ばれてる？');
-      let tbody_schedule = document.getElementById('schedule-tbody');
-      this.time_list.forEach(function(time) {
-        let tr_element = document.getElementById(time);
-        if (document.getElementById(`row_s_${time}`) === null) {
-          let td_schedule = document.createElement('td');
-          let td_assign = document.getElementById(`row_a_${time}`);
-          td_schedule.id = `row_s_${time}`;
-          tr_element.insertBefore(td_schedule, td_assign);
-        } else {
-          document.getElementById(`row_s_${time}`).innerText = '';
-          document.getElementById(`row_s_${time}`).setAttribute('rowSpan', 1);
-        }
-      });
-    },
-
-    createScheduleHash: function() {},
-    strToTime: function(str) {
-      return `${str.substr(0, 2)}:${str.substr(2, 2)}`;
-    },
-    durationToEndTime: function(time, duration) {
-      endTime = time;
     },
     currentDateToday: function() {
       let now = new Date();
