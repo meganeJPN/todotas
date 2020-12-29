@@ -135,7 +135,18 @@
       >
         <el-table-column prop="time" label="時間" width="80" height="80">
         </el-table-column>
-        <el-table-column prop="task.content" label="タスク" height="80"> </el-table-column>
+        <el-table-column prop="task.content" label="タスク" height="80">
+          <template slot-scope="scope">
+            <el-button
+                    type="text"
+                    @click="dialogShowSchedule(scope.$index, scope.row)"
+                    ><span style="margin-left: 10px">{{
+                      scope.row.task.content
+                    }}</span></el-button
+                  >
+          </template>
+        
+        </el-table-column>
         <el-table-column label="" width="80" height="80">
             <template slot-scope="scope">
               <el-button
@@ -342,8 +353,72 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="debugMethod()">キャンセル</el-button>
+        <el-button @click="dialogAssignTaskVisible=false">閉じる</el-button>
         <el-button type="primary" @click="createSchedule()">スケジュールに追加</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 
+     -----------------------------
+
+      スケジュール詳細ダイアログ
+
+     -----------------------------
+    -->
+   
+    <el-dialog
+      title="スケジュール詳細"
+      :visible.sync="dialogShowScheduleVisible"
+      width="80%"
+    >
+      <el-form :model="form_schedule">
+      <el-form-item label="作業時間" :label-width="formLabelWidth">
+      <el-col :span="6">
+      <span v-model="form_dialogShowSchedule.start_time">{{form_dialogShowSchedule.start_time}}</span>
+      </el-col>
+      <el-col class="line" :span="1">-</el-col>
+      <el-col :span="6">
+       <span v-model="form_dialogShowSchedule.end_time">{{form_dialogShowSchedule.end_time}}</span>
+       </el-col>
+      </el-form-item>
+        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+          <el-input
+            v-model="form_dialogShowSchedule.content"
+            autocomplete="off"
+            maxlength="50"
+            show-word-limit
+            readonly
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="所要時間" :label-width="formLabelWidth">
+          <div class="duration-slider">
+            <el-slider
+              v-model="form_dialogShowSchedule.duration"
+              :step="15"
+              :marks="marks_duration"
+              :min="15"
+              :max="120"
+              :disabled="true"
+            >
+            </el-slider>
+          </div>
+        </el-form-item>
+        <el-form-item label="メモ" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            v-model="form_dialogShowSchedule.comment"
+            autocomplete="off"
+            maxlength="400"
+            show-word-limit
+            resize="none"
+            rows="10"
+            readonly
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogShowScheduleVisible=false">閉じる</el-button>
+        <el-button type="primary" @click="deleteSchedule()">スケジュールから外す</el-button>
       </span>
     </el-dialog>
     
@@ -378,14 +453,11 @@ export default {
       task_id: '',
       tasks_working_index: '',
       time_span: [],
-      activeName: 'first',
-      radio1: 'New York',
-      radio2: 'New York',
-      radio3: 'New York',
-      radio4: 'New York',
+      schedule_id: '',
       dialogCreateTaskVisible: false,
       dialogShowTaskVisible: false,
       dialogAssignTaskVisible: false,
+      dialogShowScheduleVisible: false,
       value1: 0,
 
       marks_duration: {
@@ -407,26 +479,15 @@ export default {
         start_time: '',
         task_id:''
       },
+      form_dialogShowSchedule:{
+        schedule_id:'',
+        start_time:'',
+        end_tme:'',
+        content:'',
+        duration:'',
+        comment:''
+      },
       formLabelWidth: '160px',
-       cities: [{
-          value: 'Beijing',
-          label: 'Beijing'
-        }, {
-          value: 'Shanghai',
-          label: 'Shanghai'
-        }, {
-          value: 'Nanjing',
-          label: 'Nanjing'
-        }, {
-          value: 'Chengdu',
-          label: 'Chengdu'
-        }, {
-          value: 'Shenzhen',
-          label: 'Shenzhen'
-        }, {
-          value: 'Guangzhou',
-          label: 'Guangzhou'
-        }],
         value: ''
     };
   },
@@ -447,7 +508,7 @@ export default {
     this.form.comment = form_task.comment
     this.form.duration = form_task.duration
   },
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+  objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         if (rowIndex % 4 === 0) {
           return {
@@ -688,6 +749,17 @@ export default {
      }
      this.dialogAssignTaskVisible = true;
     },
+    dialogShowSchedule: function(index, schedule_task){
+    console.log("dialogShowScheduleのはじまり")
+    console.log(schedule_task)
+    this.dialogShowScheduleVisible =  true
+    this.form_dialogShowSchedule.start_time = this.getHHMM(schedule_task.schedule.start_time);
+    this.form_dialogShowSchedule.end_time = this.getHHMM(schedule_task.schedule.end_time);
+    this.form_dialogShowSchedule.content = schedule_task.task.content;
+    this.form_dialogShowSchedule.comment = schedule_task.task.comment;
+    this.form_dialogShowSchedule.duration = schedule_task.task.duration;
+    this.schedule_id = schedule_task.schedule.id;
+    },
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
       axios
@@ -735,6 +807,23 @@ export default {
             console.log(error);
           }
         );
+    },
+    deleteSchedule: function() {
+      axios.delete('/api/schedules/' + this.schedule_id).then(
+        (response) => {
+          let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
+          let j =0
+          for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){
+              this.schedule_table[i] = response.data.schedule_table[j]
+              j++
+          }
+          this.schedule_id=''
+          this.dialogShowScheduleVisible = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     },
     scheduleCellClassName: function(cell){
       if (cell.columnIndex ===1 ){
@@ -787,6 +876,12 @@ export default {
 
       return format_str;
     },
+    getHHMM: function(dateStr){
+      let date = new Date(dateStr)
+      let hourStr   = date.getHours().toString().padStart(2, '0');
+      let minuteStr = date.getMinutes().toString().padStart(2, '0');
+      return hourStr+":"+minuteStr
+    }
   },
 };
 </script>

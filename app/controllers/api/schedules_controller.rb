@@ -95,8 +95,10 @@ class Api::SchedulesController < ApplicationController
   end
 
   def destroy
+    destroy_schedule = @schedule
     if @schedule.destroy
-      render status: 200, json: {status:200}
+      @schedule_table=deleteScheduleTableArray(destroy_schedule)
+      render :show, status: :ok
     end
   end
 
@@ -143,6 +145,32 @@ class Api::SchedulesController < ApplicationController
         logger.debug(s_rowspan)
         s_column["rowspan"] = 0
       end
+      schedule_table_array.push(s_column)
+    end
+    return schedule_table_array
+  end
+
+  def deleteScheduleTableArray(schedule)
+    schedule_table_array =[]
+    s_rowspan = {}
+    time_pitch_num = (schedule.end_time - schedule.start_time).to_i/60/CONST_TIME_PITCH
+    logger.debug("time_pitch_num")
+    logger.debug(time_pitch_num)
+    time_pitch_num.times.map.each_with_index do |value, i|
+      time = schedule.start_time+CONST_TIME_PITCH.minutes*i
+      logger.debug("time")
+      logger.debug(time)
+      s_column = {}
+      s_column["time"] = time.strftime("%H") +":"+ time.strftime("%M")
+      s_column["schedule"] = ""
+      s_column["task"] = ""
+      logger.debug(time)
+      logger.debug("スケジュールじゃない時")
+      logger.debug(s_rowspan.present?)
+      logger.debug("i = #{i}")
+      logger.debug(s_rowspan)
+      s_column["rowspan"] = 1
+      
       schedule_table_array.push(s_column)
     end
     return schedule_table_array
