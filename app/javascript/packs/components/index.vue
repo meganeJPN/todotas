@@ -131,6 +131,7 @@
         :span-method="objectSpanMethod"
         border
         style="width: 100%; margin-top: 20px"
+        height="30vh"
       >
         <el-table-column prop="time" label="時間" width="80" height="80">
         </el-table-column>
@@ -805,12 +806,7 @@ export default {
 
 .schedule {
   margin-bottom: 20px;
-  height: 30vh;
-  overflow: scroll;
-  /* IE, Edge 対応 */
-  -ms-overflow-style: none;
-  /* Firefox 対応 */
-  scrollbar-width: none;
+ 
 }
 
 .schedule tr{
