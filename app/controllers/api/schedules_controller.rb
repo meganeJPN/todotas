@@ -7,8 +7,8 @@ class Api::SchedulesController < ApplicationController
     @schedule_table =[]
     @schedules = Schedule.where(start_date: params[:start_date])
     s_rowspan = {}
-    TIME_PITCH_NUM.times.map.each_with_index do |value, i|
-      time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+TIME_PITCH.minutes*i
+    CONST_TIME_PITCH_NUM.times.map.each_with_index do |value, i|
+      time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+CONST_TIME_PITCH.minutes*i
       s_column = {}
       s_column["time"] = time.strftime("%H") +":"+ time.strftime("%M")
       schedule =  @schedules.find_by(start_time: time)
@@ -16,10 +16,10 @@ class Api::SchedulesController < ApplicationController
         s_column["schedule"] = schedule
         task = Task.find(schedule.task_id)
         s_column["task"] = task
-        s_column["rowspan"] = task.duration/TIME_PITCH
+        s_column["rowspan"] = task.duration/CONST_TIME_PITCH
         
         s_rowspan["start_index"] = i;
-        s_rowspan["rowspan"] = task.duration/TIME_PITCH
+        s_rowspan["rowspan"] = task.duration/CONST_TIME_PITCH
         # logger.debug("s_rowspanに代入完了")
         # logger.debug(s_rowspan.present?)
         # logger.debug(s_rowspan["start_index"])
@@ -58,7 +58,10 @@ class Api::SchedulesController < ApplicationController
 
   def create
     @schedule = Schedule.new(schedule_params)
+    start_time = Time.zone.parse(params[:schedule][:start_date]+" "+params[:schedule][:start_time])
+    @schedule.start_time = start_time
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
+    schedule_end_time_str = @schedule.end_time.strftime("%H:%M")
     if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date])
       @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")
       return render json: @schedule.errors, status: :unprocessable_entity
@@ -71,9 +74,12 @@ class Api::SchedulesController < ApplicationController
         return render json: @schedule.errors, status: :unprocessable_entity
       end
     end
-    
-   
+    logger.debug(params[:schedule][:start_date])
+    logger.debug(params[:schedule][:start_time])
+    logger.debug(schedule_end_time_str)
+
     if @schedule.save
+      @schedule_table = createScheduleTableArray(params[:schedule][:start_date], params[:schedule][:start_time], schedule_end_time_str, @schedule)
       render :show, status: :created
     else
       render json: @schedule.errors, status: :unprocessable_entity
@@ -103,17 +109,46 @@ class Api::SchedulesController < ApplicationController
     @schedule = Schedule.find(params[:id])
   end
 
+  def createScheduleTableArray(start_date,start_time, end_time,schedule)
+    schedule_table_array =[]
+    s_rowspan = {}
+    time_pitch_num = (Time.zone.parse(end_time) - Time.zone.parse(start_time)).to_i/60/CONST_TIME_PITCH
+    logger.debug("time_pitch_num")
+    logger.debug(time_pitch_num)
+    time_pitch_num.times.map.each_with_index do |value, i|
+      time = Time.zone.parse(start_date+" "+start_time)+CONST_TIME_PITCH.minutes*i
+      logger.debug("time")
+      logger.debug(time)
+      s_column = {}
+      s_column["time"] = time.strftime("%H") +":"+ time.strftime("%M")
+      if i === 0
+        s_column["schedule"] = schedule
+        task = Task.find(schedule.task_id)
+        s_column["task"] = task
+        s_column["rowspan"] = task.duration/CONST_TIME_PITCH
+        
+        s_rowspan["start_index"] = i;
+        s_rowspan["rowspan"] = task.duration/CONST_TIME_PITCH
+        logger.debug("s_rowspanに代入完了")
+        logger.debug(s_rowspan.present?)
+        logger.debug(s_rowspan["start_index"])
+        logger.debug(s_rowspan["rowspan"])
+      else
+        s_column["schedule"] = ""
+        s_column["task"] = ""
+        logger.debug(time)
+        logger.debug("スケジュールじゃない時")
+        logger.debug(s_rowspan.present?)
+        logger.debug("i = #{i}")
+        logger.debug(s_rowspan)
+        s_column["rowspan"] = 0
+      end
+      schedule_table_array.push(s_column)
+    end
+    return schedule_table_array
+  end
+
   def isDatetimeOverlap(start1,end1,start2,end2)
-    logger.debug("時間比較の確認")
-    logger.debug("start1")
-    logger.debug(start1)
-    logger.debug("end1")
-    logger.debug(end1)
-    logger.debug("start2")
-    logger.debug(start2)
-    logger.debug("end2")
-    logger.debug(end2)
-    logger.debug("比較結果")
     logger.debug(start1 <= end2 && end1 >= start2)
     start1 < end2 && end1 > start2
   end

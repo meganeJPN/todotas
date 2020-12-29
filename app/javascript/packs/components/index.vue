@@ -132,10 +132,10 @@
         border
         style="width: 100%; margin-top: 20px"
       >
-        <el-table-column prop="time" label="時間" width="80">
+        <el-table-column prop="time" label="時間" width="80" height="80">
         </el-table-column>
-        <el-table-column prop="task.content" label="タスク"> </el-table-column>
-        <el-table-column label="" width="80">
+        <el-table-column prop="task.content" label="タスク" height="80"> </el-table-column>
+        <el-table-column label="" width="80" height="80">
             <template slot-scope="scope">
               <el-button
                 type="primary"
@@ -342,7 +342,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="debugMethod()">キャンセル</el-button>
-        <el-button type="primary" @click="createSchedule">スケジュールに追加</el-button>
+        <el-button type="primary" @click="createSchedule()">スケジュールに追加</el-button>
       </span>
     </el-dialog>
     
@@ -373,6 +373,7 @@ export default {
       s_hiide_list: [],
       start_date: '',
       start_time: '',
+      end_time:'',
       task_id: '',
       tasks_working_index: '',
       time_span: [],
@@ -436,7 +437,7 @@ export default {
   methods: {
   debugMethod: function(){
   this.dialogAssignTaskVisible = false
-  console.log(this.task_content)
+  console.log(this.form_schedule.start_time)
   },
   formInsertTask: function(){
     let form_task;
@@ -698,41 +699,36 @@ export default {
             }
           },
           (error) => {
-            console.log(error, response);
+            console.log(error);
           }
         );
     },
-    createScheduleModal: function(base_time) {
-      console.log('時間は取得できていますか？');
-      console.log(base_time);
-      console.log(this.time_list);
-      let base_time_index = this.time_list.findIndex((i) => i === base_time);
-      console.log(base_time_index);
-      let time_span_str = this.time_list.slice(
-        base_time_index,
-        base_time_index + 4
-      );
-
-      this.time_span = time_span_str.map(this.strToTime);
-      console.log(this.time_span);
-    },
     createSchedule: function() {
-      if (!this.current_date || !this.start_time || !this.task_id) return;
+      console.log(this.current_date)
+      console.log(this.form_schedule.start_time)
+       console.log(this.form_schedule.task_id)
+       let current_date_str = this.dateToStr(this.current_date);
+      if (!this.current_date || !this.form_schedule.start_time || !this.form_schedule.task_id) return;
       axios
         .post('/api/schedules', {
           schedule: {
-            start_date: this.current_date,
-            start_time: this.start_time,
-            task_id: this.task_id,
+            start_date: current_date_str,
+            start_time: this.form_schedule.start_time,
+            task_id: this.form_schedule.task_id,
           },
         })
         .then(
           (response) => {
-            this.schedules.unshift(response.data.schedule);
-            this.start_time = '';
-            this.task_id = '';
-            this.createBlankScheduleTable();
-            this.fetchSchedules();
+            let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
+            let j =0
+            for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){
+              this.schedule_table[i] = response.data.schedule_table[j]
+              j++
+            }
+            console.log(this.schedule_table)
+            this.form_schedule_start_time = '';
+            this.form_schedule_task_id = '';
+            this.dialogAssignTaskVisible = false;
           },
           (error) => {
             console.log(error);
@@ -817,6 +813,10 @@ export default {
   scrollbar-width: none;
 }
 
+.schedule tr{
+  height: 30px;
+}
+
 /* Chrome, Safari 対応 */
 .box::-webkit-scrollbar {
   display: none;
@@ -861,5 +861,8 @@ input[type='radio'] {
 }
 .duration-slider {
   width: 100%;
+}
+.el-table .tr{
+  height: 100px
 }
 </style>
