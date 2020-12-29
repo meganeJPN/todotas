@@ -12,7 +12,7 @@
     -->
       <el-tab-pane>
         <span slot="label"><i class="el-icon-edit-outline"></i>Working</span>
-        <el-table :data="tasks_working" style="width: 100%" :show-header="false">
+        <el-table :data="tasks_working" style="width: 100%" :show-header="false" height="30vh">
           <el-table-column label="" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -53,7 +53,7 @@
       <el-tab-pane
         ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
 
-        <el-table :data="tasks_finished" style="width: 100%" :show-header="false">
+        <el-table :data="tasks_finished" style="width: 100%" :show-header="false" height = "30vh">
           <el-table-column label="Name" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -131,7 +131,7 @@
         :span-method="objectSpanMethod"
         border
         style="width: 100%; margin-top: 20px"
-        height="30vh"
+        height="30vh" :cell-class-name="scheduleCellClassName"
       >
         <el-table-column prop="time" label="時間" width="80" height="80">
         </el-table-column>
@@ -736,6 +736,14 @@ export default {
           }
         );
     },
+    scheduleCellClassName: function(cell){
+      if (cell.columnIndex ===1 ){
+        if (cell.row.schedule){
+          return 'schedule-column'
+        }
+      
+      }
+    },
     currentDateToday: function() {
       let now = new Date();
       console.log('new Date()の結果は');
@@ -796,12 +804,7 @@ export default {
   display: block;
 }
 .task-list {
-  height: 30vh;
-  overflow: scroll;
-  /* IE, Edge 対応 */
-  -ms-overflow-style: none;
-  /* Firefox 対応 */
-  scrollbar-width: none;
+  
 }
 
 .schedule {
@@ -860,5 +863,8 @@ input[type='radio'] {
 }
 .el-table .tr{
   height: 100px
+}
+.el-table .schedule-column{
+  background: #f0f9eb;
 }
 </style>
