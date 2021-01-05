@@ -46,8 +46,12 @@ class Api::TasksController < ApplicationController
 
   def destroy
     if Schedule.exists?(task_id: @task.id)
-      @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため削除できません。")
-      return render json: @task.errors, status: :unprocessable_entity
+      if @task.completed && @task.destoy
+        return :show, status: :ok
+      else
+        @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため削除できません。")
+        return render json: @task.errors, status: :unprocessable_entity
+      end
     end
     render :show, status: :ok if @task.destroy
   end
