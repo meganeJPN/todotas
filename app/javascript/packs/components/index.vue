@@ -13,9 +13,7 @@
         <el-table :data="tasks_working" style="width: 100%" :show-header="false" height="30vh">
           <el-table-column label="" width="400">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top">
-                <p>タスク: {{ scope.row.content }}</p>
-                <p>所要時間: {{ scope.row.duration }}分</p>
+             
                 <div slot="reference" class="name-wrapper">
                   <i class="el-icon-time"></i
                   ><el-button
@@ -26,7 +24,7 @@
                     }}</span></el-button
                   >
                 </div>
-              </el-popover>
+          
             </template>
           </el-table-column>
           <el-table-column label="">
@@ -54,32 +52,21 @@
         <el-table :data="tasks_finished" style="width: 100%" :show-header="false" height="30vh">
           <el-table-column label="Name" width="400">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top">
-                <p>タスク: {{ scope.row.content }}</p>
-                <p>所要時間: {{ scope.row.duration }}分</p>
+              
                 <div slot="reference" class="name-wrapper">
-                  <i class="el-icon-time"></i>
-                  <span style="margin-left: 10px">{{ scope.row.content }}</span>
+                  <i class="el-icon-check"></i>
+                  <el-button
+                    type="text"
+                    @click="dialogShowTask(scope.$index, scope.row)"
+                    ><span style="margin-left: 10px">{{
+                      scope.row.content
+                    }}</span></el-button
+                  >
                 </div>
-              </el-popover>
+   
             </template>
           </el-table-column>
-          <el-table-column label="Operations">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="dialogShowTask(scope.$index, scope.row)"
-                >Edit</el-button
-              >
-
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-                >Delete</el-button
-              >
-            </template>
-          </el-table-column>
+         
         </el-table></el-tab-pane
       >
     </el-tabs>
@@ -279,7 +266,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogShowTaskVisible = false">閉じる</el-button>
         <el-button type="danger" @click="openConfirmDeleteTask">削除</el-button>
-        <el-button type="primary" @click="updateTask">更新</el-button>
+        <el-button v-if="form.completed === false" type="primary" @click="updateTask">更新</el-button>
       </span>
     </el-dialog>
 
@@ -475,6 +462,7 @@ export default {
         content: '',
         duration: 15,
         comment: '',
+        completed:'',
       },
       form_schedule:{
         start_time: '',
@@ -761,6 +749,7 @@ export default {
       this.form.content = task.content;
       this.form.duration = task.duration;
       this.form.comment = task.comment;
+      this.form.completed = task.completed
       this.tasks_working_index = index;
       this.task_id = task.id;
     },
