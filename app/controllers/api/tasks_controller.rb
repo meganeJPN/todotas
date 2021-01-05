@@ -49,11 +49,7 @@ class Api::TasksController < ApplicationController
       @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため削除できません。")
       return render json: @task.errors, status: :unprocessable_entity
     end
-    if @task.destroy 
-      render :show, status: :ok
-    end
-
-
+    render :show, status: :ok if @task.destroy
   end
 
   private

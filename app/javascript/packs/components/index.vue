@@ -741,7 +741,12 @@ export default {
      time = new Date(this.current_date.setMinutes(Number(row.time.slice(-2))));
      console.log("time↓")
      console.log(time)
-      this.time_span[0] = time.getHours().toString().padStart(2,'0') +":" + time.getMinutes().toString().padStart(2,'0');
+     this.time_span[0] = time.getHours().toString().padStart(2,'0') +":" + time.getMinutes().toString().padStart(2,'0');
+     this.form_dialogShowSchedule.start_time=""
+     this.form_dialogShowSchedule.end_time=""
+     this.form_dialogShowSchedule.content=""
+     this.form_dialogShowSchedule.commnet=""
+     this.form_dialogShowSchedule.duration=""
      for (let i =1;i<4; i++){
       let tmp_time = new Date(time.setMinutes(time.getMinutes()+15))
       console.log("tmp_time↓")
