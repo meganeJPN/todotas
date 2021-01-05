@@ -419,7 +419,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogShowScheduleVisible=false">閉じる</el-button>
-        <el-button type="primary" @click="deleteSchedule()">スケジュールから外す</el-button>
+        <el-button type="primary" @click="openConfirmDeleteSchedule()">スケジュールから外す</el-button>
       </span>
     </el-dialog>
     
@@ -571,6 +571,39 @@ export default {
             title: 'Info',
             type: 'info',
             message: 'タスクの削除をキャンセルしました。',
+          });
+        });
+    },
+    openConfirmDeleteSchedule() {
+      this.$confirm(
+        `タスク「${this.form_dialogShowSchedule.content}」を本当にスケジュールから外してよろしいですか？`,
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              this.deleteSchedule();
+              done();
+            } else {
+              done();
+            }
+          },
+        }
+      )
+        .then(() => {
+          this.$notify({
+            title: 'Success',
+            type: 'success',
+            message: 'スケジュールから外しました。',
+          });
+        })
+        .catch(() => {
+          this.$notify({
+            title: 'Info',
+            type: 'info',
+            message: 'スケジュールから外すことをキャンセルしました。',
           });
         });
     },
