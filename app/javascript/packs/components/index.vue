@@ -1,7 +1,5 @@
-<template> </template>
-
 <template>
-  <div>
+  <div class = "main">
     <el-tabs type="border-card">
      <!-- 
      -----------------------------
@@ -53,7 +51,7 @@
       <el-tab-pane
         ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
 
-        <el-table :data="tasks_finished" style="width: 100%" :show-header="false" height = "30vh">
+        <el-table :data="tasks_finished" style="width: 100%" :show-header="false" height="30vh">
           <el-table-column label="Name" width="400">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -130,12 +128,15 @@
         :data="schedule_table"
         :span-method="objectSpanMethod"
         border
-        style="width: 100%; margin-top: 20px"
-        height="30vh" :cell-class-name="scheduleCellClassName"
+        style="width: 100%; margin-top: 20px;"
+         :cell-class-name="scheduleCellClassName"
+         height="40vh"
+        :show-header="false"
+        :cell-style="{padding: '0', height: '10px'}"
       >
-        <el-table-column prop="time" label="時間" width="80" height="80">
+        <el-table-column prop="time" label="時間" width="80" height="30">
         </el-table-column>
-        <el-table-column prop="task.content" label="タスク" height="80">
+        <el-table-column prop="task.content" label="タスク" height="30">
           <template slot-scope="scope">
             <el-button
                     type="text"
@@ -147,7 +148,7 @@
           </template>
         
         </el-table-column>
-        <el-table-column label="" width="80" height="80">
+        <el-table-column label="" width="80" height="30">
             <template slot-scope="scope">
               <el-button
                 type="primary"
@@ -889,6 +890,10 @@ export default {
 [v-cloak] {
   display: none;
 }
+.main {
+  padding-top:60px;
+  height:100vh-60px;
+}
 .display_none {
   display: none;
 }
@@ -903,7 +908,7 @@ export default {
 }
 
 .schedule {
-  margin-bottom: 20px;
+  padding-bottom: 80px;
  
 }
 
@@ -949,6 +954,11 @@ input[type='radio'] {
   background-color: #b3c0d1;
   color: #333;
   line-height: 60px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 50;
+
 }
 .el-footer .el-row {
   text-align: center;
@@ -957,7 +967,7 @@ input[type='radio'] {
   width: 100%;
 }
 .el-table .tr{
-  height: 100px
+  height: 30px;
 }
 .el-table .schedule-column{
   background: #f0f9eb;
