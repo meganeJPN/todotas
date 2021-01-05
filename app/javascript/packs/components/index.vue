@@ -277,7 +277,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogShowTaskVisible = false">Cancel</el-button>
+        <el-button @click="dialogShowTaskVisible = false">閉じる</el-button>
         <el-button type="danger" @click="openConfirmDeleteTask">削除</el-button>
         <el-button type="primary" @click="updateTask">更新</el-button>
       </span>
