@@ -100,7 +100,7 @@
           </div>
         </div>
         <div class="row">
-        <p v-model="current_date">{{dateToStrForDisplay(current_date)}}</p>
+        <p v-model="current_date_display">{{dateToStrForDisplay(current_date)}}</p>
       </div>
       </div>
       
@@ -181,8 +181,8 @@
       :visible.sync="dialogCreateTaskVisible"
       width="80%"
     >
-      <el-form :model="form">
-        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+      <el-form :model="form" :rules="rules" ref="form">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth" prop="content">
           <el-input
             v-model="form.content"
             autocomplete="off"
@@ -190,7 +190,7 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="所要時間" :label-width="formLabelWidth">
+        <el-form-item label="所要時間" :label-width="formLabelWidth"　prop="duration">
           <div class="duration-slider">
             <el-slider
               v-model="form.duration"
@@ -202,7 +202,7 @@
             </el-slider>
           </div>
         </el-form-item>
-        <el-form-item label="メモ" :label-width="formLabelWidth">
+        <el-form-item label="メモ" :label-width="formLabelWidth" prop="comment">
           <el-input
             type="textarea"
             v-model="form.comment"
@@ -285,15 +285,15 @@
       :visible.sync="dialogAssignTaskVisible"
       width="80%"
     >
-      <el-form :model="form_schedule">
-      <el-form-item label="開始時間" :label-width="formLabelWidth">
+      <el-form :model="form_schedule" :rules="rules" ref="form_schedule">
+      <el-form-item label="開始時間" :label-width="formLabelWidth"　prop="start_time">
       <div>
         <el-radio-group v-model="form_schedule.start_time">
           <el-radio-button v-for="time in time_span" :label="time"></el-radio-button>
         </el-radio-group>
       </div>
       </el-form-item>
-      <el-form-item label="アサインするタスク" :label-width="formLabelWidth">
+      <el-form-item label="アサインするタスク" :label-width="formLabelWidth" prop ="task_select">
         <div>
           <el-select v-model="form_schedule.task_id" placeholder="Select" v-on:change="formInsertTask()">
             <el-option
@@ -433,6 +433,7 @@ export default {
       duration: '',
       completed: '',
       current_date: '',
+      current_date_display:'',
       schedules: [],
       schedule_table: [],
       s_show_list: [],
@@ -479,7 +480,26 @@ export default {
         comment:''
       },
       formLabelWidth: '160px',
-        value: ''
+      value: '',
+      rules: {
+        content: [
+            { required: true, message: 'タスク内容を入力してください', trigger: 'blur' },
+            { min: 1, max: 50, message: '1文字以上〜50文字以内で入力してください', trigger: 'blur' }
+          ],
+          duration: [
+            { required: true, message: '所要時間を選択してください', trigger: 'blur' },
+          ],
+          comment:[
+            { max: 400, message: '400文字以内で入力してください', trigger: 'blur' }
+          ],
+          task_select: [
+            { required: true, message: 'スケジュールにアサインするタスクを選択してください', trigger: 'change' }
+          ],
+          start_time: [
+            { required: true, message: '開始時間を選択してください', trigger: 'change' }
+          ],
+
+      }
     };
   },
   mounted: function() {
@@ -654,6 +674,7 @@ export default {
         .classList.toggle('display_none');
     },
     createTask: function() {
+      
       if (!this.form.content || !this.form.duration) return;
       axios
         .post('/api/tasks', {
@@ -869,6 +890,8 @@ export default {
       console.log(now);
       this.current_date = now;
       console.log(`今日は${this.current_date}です。`);
+      this.current_date_display = this.dateToStrForDisplay(this.current_date)
+      console.log(this.current_date_display);
       this.fetchSchedules();
       console.log('this.tasks');
       console.log(this.tasks);
@@ -876,15 +899,20 @@ export default {
     currentDateNext: function(day) {
       console.log('実行前のcurrent_dateは');
       console.log(this.current_date);
-      this.currrent_day = day.setDate(day.getDate() + 1);
+      day.setDate(day.getDate() + 1);
+      this.current_date_display = this.dateToStrForDisplay(day)
+      console.log(this.current_date_display);
       console.log(`${this.current_date}にカレントデイトを変更しました`);
+      
       this.fetchSchedules();
     },
     currentDateBefore: function(day) {
       console.log('実行前のcurrent_dateは');
       console.log(this.current_date);
-      this.currrent_day = day.setDate(day.getDate() - 1);
+      day.setDate(day.getDate() - 1);
       console.log(`${this.current_date}にカレントデイトを変更しました`);
+      this.current_date_display = this.dateToStrForDisplay(day)
+      console.log(this.current_date_display);
       this.fetchSchedules();
     },
     dateToStr: function(date) {
@@ -907,6 +935,12 @@ export default {
       return format_str;
     },
     dateToStrForDisplay: function(date) {
+      console.log("dateToStrForDisplayのdate")
+      console.log(date)
+      if (date === ""){
+        let now = new Date();
+        date = now
+      }
       let year_str = date.getFullYear();
       //月だけ+1すること
       let month_str = 1 + date.getMonth();
