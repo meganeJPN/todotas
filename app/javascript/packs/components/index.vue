@@ -561,7 +561,7 @@ export default {
           type: 'warning',
           beforeClose: (action, instance, done) => {
             if (action === 'confirm') {
-              this.deleteTask();
+             
               done();
             } else {
               done();
@@ -570,11 +570,8 @@ export default {
         }
       )
         .then(() => {
-          this.$notify({
-            title: 'Success',
-            type: 'success',
-            message: 'タスクを削除しました。',
-          });
+          this.deleteTask();
+         
         })
         .catch(() => {
           this.$notify({
@@ -751,11 +748,13 @@ export default {
           (error) => {
             console.log("更新失敗")
             console.log(error.response.data.errors);
-            this.$notify({
-            title: 'Error',
-            type: 'error',
-            message: error.response.data.errors[0],
-          });
+            for (let i =0; i<error.response.data.errors.length; i++){
+              this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+              });
+            }
           }
         );
     },
@@ -764,9 +763,21 @@ export default {
         (response) => {
           this.tasks_working.splice(this.tasks_working_index, 1);
           this.dialogShowTaskVisible = false;
+           this.$notify({
+            title: 'Success',
+            type: 'success',
+            message: 'タスクを削除しました。',
+          });
         },
         (error) => {
           console.log(error);
+          for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
         }
       );
     },

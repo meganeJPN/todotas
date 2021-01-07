@@ -20,7 +20,7 @@ class Api::TasksController < ApplicationController
     if @task.save
       render :show, status: :created
     else
-      render json: @task.errors, status: :unprocessable_entity
+      render json: {errors: @task.errors}, status: :unprocessable_entity
     end
   end
 
@@ -47,8 +47,7 @@ class Api::TasksController < ApplicationController
       if @task.completed && @task.destoy
         return :show, status: :ok
       else
-        @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため削除できません。")
-        return render json: @task.errors, status: :unprocessable_entity
+        return render json: {errors: @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため削除できません。")}, status: :unprocessable_entity
       end
     end
     render :show, status: :ok if @task.destroy
