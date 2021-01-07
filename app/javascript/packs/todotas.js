@@ -10,6 +10,7 @@ import {Table} from 'element-ui-2.6.3'
 Vue.use(ElementUI, { locale })
 Vue.component(Table.name, Table)
 Vue.config.productionTip = false;
+Vue.config.silent = true;
 
 var app = new Vue({
   router: Router,
