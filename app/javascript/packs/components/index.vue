@@ -215,7 +215,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogCreateTaskVisible = false">Cancel</el-button>
+        <el-button @click="dialogCreateTaskVisible = false">閉じる</el-button>
         <el-button type="primary" @click="createTask">作成</el-button>
       </span>
     </el-dialog>
@@ -232,8 +232,8 @@
       :visible.sync="dialogShowTaskVisible"
       width="80%"
     >
-      <el-form :model="form">
-        <el-form-item label="タスク内容" :label-width="formLabelWidth">
+      <el-form :model="form"　:rules="rules" ref="form">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth"　prop="content">
           <el-input
             v-model="form.content"
             autocomplete="off"
@@ -241,7 +241,7 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="所要時間" :label-width="formLabelWidth">
+        <el-form-item label="所要時間" :label-width="formLabelWidth"　prop="duration">
           <div class="duration-slider">
             <el-slider
               v-model="form.duration"
@@ -253,7 +253,7 @@
             </el-slider>
           </div>
         </el-form-item>
-        <el-form-item label="メモ" :label-width="formLabelWidth">
+        <el-form-item label="メモ" :label-width="formLabelWidth" prop="comment">
           <el-input
             type="textarea"
             v-model="form.comment"
@@ -674,7 +674,8 @@ export default {
         .classList.toggle('display_none');
     },
     createTask: function() {
-      
+      console.log("createTask")
+      this.submitForm("form")
       if (!this.form.content || !this.form.duration) return;
       axios
         .post('/api/tasks', {
@@ -719,6 +720,7 @@ export default {
       );
     },
     updateTask: function() {
+      this.submitForm("form")
       if (!this.form.content || !this.form.duration) return;
       axios
         .patch('/api/tasks/' + this.task_id, {
@@ -831,7 +833,9 @@ export default {
       console.log(this.current_date)
       console.log(this.form_schedule.start_time)
        console.log(this.form_schedule.task_id)
+       this.submitForm("form_schedule")
        let current_date_str = this.dateToStr(this.current_date);
+       
       if (!this.current_date || !this.form_schedule.start_time || !this.form_schedule.task_id) return;
       axios
         .post('/api/schedules', {
@@ -967,7 +971,19 @@ export default {
       let hourStr   = date.getHours().toString().padStart(2, '0');
       let minuteStr = date.getMinutes().toString().padStart(2, '0');
       return hourStr+":"+minuteStr
-    }
+    },
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
   },
 };
 </script>
