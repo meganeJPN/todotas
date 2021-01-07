@@ -749,7 +749,13 @@ export default {
             });
           },
           (error) => {
-            console.log(error);
+            console.log("更新失敗")
+            console.log(error.response.data.errors);
+            this.$notify({
+            title: 'Error',
+            type: 'error',
+            message: error.response.data.errors[0],
+          });
           }
         );
     },

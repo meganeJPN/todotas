@@ -28,9 +28,9 @@ class Api::TasksController < ApplicationController
   def update
     # タスク完了処理
     return render :show, status: :ok if params[:task][:completed] && @task.update(completed: true)
-    
-    return render json: @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため更新できません。"), status: :unprocessable_entity if Schedule.exists?(task_id: @task.id) 
-    return render json: @task.errors.add(:base, "そのタスクは完了しているため更新できません。"), status: :unprocessable_entity if @task.completed
+    return render json: {errors:  @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため更新できません。")}, status: :unprocessable_entity if Schedule.exists?(task_id: @task.id) 
+    # return render json: @task.errors.add(:base, "そのタスクはスケジュールにアサインされているため更新できません。"), status: :unprocessable_entity if Schedule.exists?(task_id: @task.id) 
+    return render json: {errors: @tasks.errors.add(:base, "そのタスクは完了しているため更新できません。")}, status: :unprocessable_entity if @task.completed
     if @task.update(task_params)
       render :show, status: :ok
     else
