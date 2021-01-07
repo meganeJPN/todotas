@@ -11,12 +11,22 @@
       <el-tab-pane>
         <span slot="label"><i class="el-icon-edit-outline"></i>Working</span>
         <el-table :data="tasks_working" style="width: 100%" :show-header="false" height="30vh">
-          <el-table-column label="" width="400">
+        <el-table-column label="" width="50px">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                icon="el-icon-check"
+                circle
+                size="mini"
+                @click="doneTask(scope.$index, scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="">
             <template slot-scope="scope">
              
                 <div slot="reference" class="name-wrapper">
-                  <i class="el-icon-time"></i
-                  ><el-button
+                  <el-button
                     type="text"
                     @click="dialogShowTask(scope.$index, scope.row)"
                     ><span style="margin-left: 10px">{{
@@ -27,16 +37,7 @@
           
             </template>
           </el-table-column>
-          <el-table-column label="">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                icon="el-icon-check"
-                size="mini"
-                @click="doneTask(scope.$index, scope.row)"
-              ></el-button>
-            </template>
-          </el-table-column>
+          
         </el-table>
       </el-tab-pane>
       <!-- 
@@ -50,7 +51,7 @@
         ><span slot="label"><i class="el-icon-finished"></i>Finished</span>
 
         <el-table :data="tasks_finished" style="width: 100%" :show-header="false" height="30vh">
-          <el-table-column label="Name" width="400">
+          <el-table-column label="Name">
             <template slot-scope="scope">
               
                 <div slot="reference" class="name-wrapper">
@@ -98,10 +99,11 @@
             ></a>
           </div>
         </div>
+        <div class="row">
+        <p v-model="current_date">{{dateToStrForDisplay(current_date)}}</p>
       </div>
-      <div class="row">
-        <p v-model="current_date">{{current_date}}</p>
       </div>
+      
     </el-row>
      <!-- 
      -----------------------------
@@ -901,6 +903,28 @@ export default {
       format_str = format_str.replace(/YYYY/g, year_str);
       format_str = format_str.replace(/MM/g, month_str);
       format_str = format_str.replace(/DD/g, day_str);
+
+      return format_str;
+    },
+    dateToStrForDisplay: function(date) {
+      let year_str = date.getFullYear();
+      //月だけ+1すること
+      let month_str = 1 + date.getMonth();
+      let day_str = date.getDate();
+      let hour_str = date.getHours();
+      let minute_str = date.getMinutes();
+      let second_str = date.getSeconds();
+      let format_str = 'YYYY.MM.DD WW';
+      let dayOfWeek = date.getDay();
+      let dayOfWeekStr = [ "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" ][dayOfWeek] 
+
+      month_str = ('0' + month_str).slice(-2);
+      day_str = ('0' + day_str).slice(-2);
+
+      format_str = format_str.replace(/YYYY/g, year_str);
+      format_str = format_str.replace(/MM/g, month_str);
+      format_str = format_str.replace(/DD/g, day_str);
+      format_str = format_str.replace(/WW/g, dayOfWeekStr );
 
       return format_str;
     },
