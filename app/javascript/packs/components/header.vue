@@ -12,7 +12,16 @@
         <el-dropdown-item
           ><router-link to="/user">ユーザー情報</router-link></el-dropdown-item
         >
-
+        <el-dropdown-item
+          ><router-link to="/users/signup"
+            >サインアップ</router-link
+          ></el-dropdown-item
+        >
+        <el-dropdown-item
+          ><router-link to="/users/login"
+            >ログイン</router-link
+          ></el-dropdown-item
+        >
         <el-dropdown-item
           ><router-link to="/user">ログアウト</router-link></el-dropdown-item
         >

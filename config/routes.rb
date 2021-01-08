@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   end
   root to: 'home#index'
   get 'user', to:  'home#index'
+  get 'users/signup', to:  'home#index'
+  get 'users/login', to:  'home#index'
 
   namespace :api, format: 'json' do
     resources :tasks, only: [:index, :create, :update, :show, :destroy]
