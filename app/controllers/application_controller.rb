@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include DeviseTokenAuth::Concerns::SetUserByToken
+  protect_from_forgery with: :null_session
   CONST_START_TIME = "08:00"
   CONST_END_TIME = "22:00"
   CONST_TIME_PITCH = 15

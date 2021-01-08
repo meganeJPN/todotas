@@ -39,6 +39,10 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'foreman'
 gem 'jquery-rails'
+gem "devise"
+gem "devise_token_auth"
+gem "rack-cors" # Railsアプリインストール時にコメントアウトされていると思います。
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
