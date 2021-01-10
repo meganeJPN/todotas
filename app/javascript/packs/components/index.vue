@@ -703,6 +703,7 @@ export default {
           )
         .then(
           (response) => {
+            
             this.tasks_working.unshift(response.data.task);
             this.tasks_not_assigned.unshift(response.data.task);
             this.form.content = '';
