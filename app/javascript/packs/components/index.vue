@@ -556,6 +556,11 @@ export default {
         `タスク「${this.form.content}」を本当に削除してよろしいですか？`,
         'Warning',
         {
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
@@ -640,7 +645,14 @@ export default {
     },
     fetchTasks: function() {
       axios
-        .get('/api/tasks', { params: { current_date: this.current_date } })
+        .get('/api/tasks', {
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+           params: { current_date: this.current_date } 
+           })
         .then(
           (response) => {
             this.tasks_working.length = 0;
@@ -675,13 +687,20 @@ export default {
       this.submitForm("form")
       if (!this.form.content || !this.form.duration) return;
       axios
-        .post('/api/tasks', {
-          task: {
+        .post('/api/tasks', 
+        {task: {
             content: this.form.content,
             comment: this.form.comment,
             duration: this.form.duration,
           },
-        })
+        },
+        {
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          }}
+          )
         .then(
           (response) => {
             this.tasks_working.unshift(response.data.task);
@@ -701,7 +720,14 @@ export default {
         );
     },
     doneTask: function(index, task) {
-      axios.patch('/api/tasks/' + task.id, { task: { completed: true } }).then(
+      axios.patch('/api/tasks/' + task.id, { 
+        headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+        task: { completed: true } 
+        }).then(
         (response) => {
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
@@ -721,6 +747,11 @@ export default {
       if (!this.form.content || !this.form.duration) return;
       axios
         .patch('/api/tasks/' + this.task_id, {
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
           task: {
             content: this.form.content,
             comment: this.form.comment,
@@ -759,7 +790,14 @@ export default {
         );
     },
     deleteTask: function() {
-      axios.delete('/api/tasks/' + this.task_id).then(
+      axios.delete('/api/tasks/' + this.task_id,{
+        headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+      }
+      ).then(
         (response) => {
           this.tasks_working.splice(this.tasks_working_index, 1);
           this.dialogShowTaskVisible = false;
@@ -833,7 +871,13 @@ export default {
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
       axios
-        .get('/api/schedules', { params: { start_date: current_date_str } })
+        .get('/api/schedules', { 
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+          params: { start_date: current_date_str } })
         .then(
           (response) => {
             this.schedule_table.length = 0;
@@ -856,6 +900,11 @@ export default {
       if (!this.current_date || !this.form_schedule.start_time || !this.form_schedule.task_id) return;
       axios
         .post('/api/schedules', {
+          headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
           schedule: {
             start_date: current_date_str,
             start_time: this.form_schedule.start_time,
@@ -881,7 +930,13 @@ export default {
         );
     },
     deleteSchedule: function() {
-      axios.delete('/api/schedules/' + this.schedule_id).then(
+      axios.delete('/api/schedules/' + this.schedule_id, {
+        headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+      }).then(
         (response) => {
           let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
           let j =0

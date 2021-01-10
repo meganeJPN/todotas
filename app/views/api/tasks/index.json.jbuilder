@@ -23,5 +23,5 @@ json.set! :tasks_not_assigned do
 end
 
 json.set! :current_user do
-  json.extract! current_user, :id ,:name, :email
+  json.extract! current_v1_user, :id ,:name, :email
 end
