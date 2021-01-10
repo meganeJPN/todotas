@@ -111,10 +111,11 @@ export default {
         email: this.form.email,
         password: this.form.password,
       }).then((response)=>{
-
       },
       (error) => {
-        console.log(error)
+        for (let i =0; i<error.response.data.errors.full_messages.length; i++){
+          this.$message.error(error.response.data.errors.full_messages[i]);
+          }
       }
       );
     },
