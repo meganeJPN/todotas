@@ -15,7 +15,7 @@
           <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-form-item label="Email">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.email"></el-input>
         </el-form-item>
         <el-form-item label="Password" prop="pass">
           <el-input
@@ -33,7 +33,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="onSubmit"
+          <el-button style="float: right" type="primary" @click="signUp"
             >Sign up</el-button
           >
         </el-form-item>
@@ -92,6 +92,7 @@ export default {
     return {
       form: {
         name: '',
+        email:'',
         password: '',
         confirm_password: '',
       },
@@ -105,7 +106,17 @@ export default {
   methods: {
     signUp: function(){
       if(!this.form.name || !this.form.password || !this.form.confirm_password) return;
-      
+      axios.post('/v1/auth',{
+        name: this.form.name,
+        email: this.form.email,
+        password: this.form.password,
+      }).then((response)=>{
+
+      },
+      (error) => {
+        console.log(error)
+      }
+      );
     },
   },
 };
