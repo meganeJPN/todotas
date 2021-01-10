@@ -102,6 +102,11 @@ export default {
     };
   },
   mounted: function() {},
-  methods: {},
+  methods: {
+    signUp: function(){
+      if(!this.form.name || !this.form.password || !this.form.confirm_password) return;
+      
+    },
+  },
 };
 </script>
