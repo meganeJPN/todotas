@@ -293,8 +293,8 @@
         </el-radio-group>
       </div>
       </el-form-item>
-      <el-form-item label="アサインするタスク" :label-width="formLabelWidth" prop ="task_select">
-        <div>
+      <el-form-item label="アサインするタスク" :label-width="formLabelWidth">
+        
           <el-select v-model="form_schedule.task_id" placeholder="Select" v-on:change="formInsertTask()">
             <el-option
               v-for="task_working in tasks_working"
@@ -305,7 +305,7 @@
               <span style="float: right; color: #8492a6; font-size: 13px">{{ task_working.duration }}分</span>
             </el-option>
           </el-select>
-        </div>
+        
       </el-form-item>
         <el-form-item label="タスク内容" :label-width="formLabelWidth">
           <el-input
@@ -703,7 +703,10 @@ export default {
           )
         .then(
           (response) => {
-            
+            localStorage.setItem('access-token', response.headers['access-token'])
+            localStorage.setItem('client', response.headers.client)
+            localStorage.setItem('uid', response.headers.uid)
+            localStorage.setItem('token-type', response.headers['token-type'])
             this.tasks_working.unshift(response.data.task);
             this.tasks_not_assigned.unshift(response.data.task);
             this.form.content = '';
@@ -729,6 +732,10 @@ export default {
             client: localStorage.getItem('client'),
           }}).then(
         (response) => {
+          localStorage.setItem('access-token', response.headers['access-token'])
+          localStorage.setItem('client', response.headers.client)
+          localStorage.setItem('uid', response.headers.uid)
+          localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
           this.$notify({
@@ -759,6 +766,10 @@ export default {
           }})
         .then(
           (response) => {
+            localStorage.setItem('access-token', response.headers['access-token'])
+            localStorage.setItem('client', response.headers.client)
+            localStorage.setItem('uid', response.headers.uid)
+            localStorage.setItem('token-type', response.headers['token-type'])
             this.tasks_working[this.tasks_working_index].content =
               response.data.task.content;
             this.tasks_working[this.tasks_working_index].duration =
@@ -778,6 +789,10 @@ export default {
           (error) => {
             console.log("更新失敗")
             console.log(error.response.data.errors);
+            localStorage.setItem('access-token', error.response.headers['access-token'])
+            localStorage.setItem('client', error.response.headers.client)
+            localStorage.setItem('uid', error.response.headers.uid)
+            localStorage.setItem('token-type', error.response.headers['token-type'])
             for (let i =0; i<error.response.data.errors.length; i++){
               this.$notify({
               title: 'Error',
@@ -798,6 +813,10 @@ export default {
       }
       ).then(
         (response) => {
+          localStorage.setItem('access-token', response.headers['access-token'])
+            localStorage.setItem('client', response.headers.client)
+            localStorage.setItem('uid', response.headers.uid)
+            localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(this.tasks_working_index, 1);
           this.dialogShowTaskVisible = false;
            this.$notify({
@@ -808,6 +827,10 @@ export default {
         },
         (error) => {
           console.log(error);
+          localStorage.setItem('access-token', error.response.headers['access-token'])
+          localStorage.setItem('client', error.response.headers.client)
+          localStorage.setItem('uid', error.response.headers.uid)
+          localStorage.setItem('token-type', error.response.headers['token-type'])
           for (let i =0; i<error.response.data.errors.length; i++){
             this.$notify({
               title: 'Error',
@@ -911,6 +934,10 @@ export default {
           },})
         .then(
           (response) => {
+            localStorage.setItem('access-token', response.headers['access-token'])
+            localStorage.setItem('client', response.headers.client)
+            localStorage.setItem('uid', response.headers.uid)
+            localStorage.setItem('token-type', response.headers['token-type'])
             let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
             let j =0
             for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){
@@ -918,8 +945,8 @@ export default {
               j++
             }
             console.log(this.schedule_table)
-            this.form_schedule_start_time = '';
-            this.form_schedule_task_id = '';
+            this.form_schedule.start_time = '';
+            this.form_schedule.task_id = '';
             this.dialogAssignTaskVisible = false;
           },
           (error) => {
@@ -936,6 +963,10 @@ export default {
           }
       }).then(
         (response) => {
+          localStorage.setItem('access-token', response.headers['access-token'])
+            localStorage.setItem('client', response.headers.client)
+            localStorage.setItem('uid', response.headers.uid)
+            localStorage.setItem('token-type', response.headers['token-type'])
           let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
           let j =0
           for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){

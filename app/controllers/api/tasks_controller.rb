@@ -6,12 +6,12 @@ class Api::TasksController < ApplicationController
 
   # GET /tasks
   def index
-    @tasks = Task.eager_load(:users).where(users: {id: current_v1_user.id}).order(created_at: "DESC")
-    @tasks_working = Task.where(completed: false).order('updated_at DESC')
-    @tasks_finished = Task.where(completed: true)
-    @tasks_assigned = Task.eager_load(:schedules).where(tasks: {completed: false},schedules: {start_date: params[:current_date]})
-    tasks_not_assigned_nil = Task.eager_load(:schedules).where(tasks: {completed: false}).where(schedules: {start_date: nil})
-    tasks_not_assigned_other = Task.eager_load(:schedules).where(tasks: {completed: false}).where.not(schedules: {start_date: params[:current_date]})
+    @tasks = Task.where(user_id: current_v1_user.id).order(created_at: "DESC")
+    @tasks_working = @tasks.where(completed: false).order('updated_at DESC')
+    @tasks_finished = @tasks.where(completed: true)
+    @tasks_assigned = @tasks.eager_load(:schedules).where(tasks: {completed: false},schedules: {start_date: params[:current_date]})
+    tasks_not_assigned_nil = @tasks.eager_load(:schedules).where(tasks: {completed: false}).where(schedules: {start_date: nil})
+    tasks_not_assigned_other = @tasks.eager_load(:schedules).where(tasks: {completed: false}).where.not(schedules: {start_date: params[:current_date]})
     @tasks_not_assigned = tasks_not_assigned_nil + tasks_not_assigned_other;
   end
 
