@@ -1,11 +1,14 @@
 class Api::SchedulesController < ApplicationController
   protect_from_forgery
   before_action :set_schedule, only: [:show, :update, :destroy]
+  before_action :authenticate_v1_user!
+  before_action :not_login_redirect_to_new_session
+
   def index
     @s_show_list = []
     @s_hide_list = []
     @schedule_table =[]
-    @schedules = Schedule.where(start_date: params[:start_date])
+    @schedules = Schedule.eager_load(:users).where(users: {id: current_v1_user.id}).where(start_date: params[:start_date])
     s_rowspan = {}
     CONST_TIME_PITCH_NUM.times.map.each_with_index do |value, i|
       time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+CONST_TIME_PITCH.minutes*i
@@ -57,7 +60,7 @@ class Api::SchedulesController < ApplicationController
   end
 
   def create
-    @schedule = Schedule.new(schedule_params)
+    @schedule = current_v1_user.schedules.build(schedule_params)
     start_time = Time.zone.parse(params[:schedule][:start_date]+" "+params[:schedule][:start_time])
     @schedule.start_time = start_time
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
@@ -179,5 +182,9 @@ class Api::SchedulesController < ApplicationController
   def isDatetimeOverlap(start1,end1,start2,end2)
     logger.debug(start1 <= end2 && end1 >= start2)
     start1 < end2 && end1 > start2
+  end
+
+  def not_login_redirect_to_new_session
+    redirect_to new_v1_user_session_path unless v1_user_signed_in?
   end
 end

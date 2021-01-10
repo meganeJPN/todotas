@@ -2,6 +2,7 @@ class Api::TasksController < ApplicationController
   protect_from_forgery
   before_action :set_task, only: [:show, :update, :destroy]
   before_action :authenticate_v1_user!
+  before_action :not_login_redirect_to_new_session
 
   # GET /tasks
   def index
@@ -60,5 +61,9 @@ class Api::TasksController < ApplicationController
   end
   def set_task
     @task = Task.find(params[:id])
+  end
+
+  def not_login_redirect_to_new_session
+    redirect_to new_v1_user_session_path unless v1_user_signed_in?
   end
 end
