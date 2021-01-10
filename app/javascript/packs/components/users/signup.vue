@@ -12,10 +12,10 @@
         label-position="top"
       >
         <el-form-item label="name">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.name" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Email">
-          <el-input v-model="form.email"></el-input>
+          <el-input v-model="form.email" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Password" prop="pass">
           <el-input
