@@ -722,13 +722,12 @@ export default {
     },
     doneTask: function(index, task) {
       axios.patch('/api/tasks/' + task.id, { 
-        headers: {
+        task: { completed: true } 
+        },{ headers: {
             'access-token': localStorage.getItem('access-token'),
             uid: localStorage.getItem('uid'),
             client: localStorage.getItem('client'),
-          },
-        task: { completed: true } 
-        }).then(
+          }}).then(
         (response) => {
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
@@ -748,17 +747,16 @@ export default {
       if (!this.form.content || !this.form.duration) return;
       axios
         .patch('/api/tasks/' + this.task_id, {
-          headers: {
-            'access-token': localStorage.getItem('access-token'),
-            uid: localStorage.getItem('uid'),
-            client: localStorage.getItem('client'),
-          },
           task: {
             content: this.form.content,
             comment: this.form.comment,
             duration: this.form.duration,
-          },
-        })
+          }
+        },{headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          }})
         .then(
           (response) => {
             this.tasks_working[this.tasks_working_index].content =
@@ -796,7 +794,7 @@ export default {
             'access-token': localStorage.getItem('access-token'),
             uid: localStorage.getItem('uid'),
             client: localStorage.getItem('client'),
-          },
+          }
       }
       ).then(
         (response) => {
@@ -872,13 +870,13 @@ export default {
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
       axios
-        .get('/api/schedules', { 
-          headers: {
+        .get('/api/schedules', { headers: {
             'access-token': localStorage.getItem('access-token'),
             uid: localStorage.getItem('uid'),
             client: localStorage.getItem('client'),
           },
-          params: { start_date: current_date_str } })
+          params: { start_date: current_date_str }, }
+          )
         .then(
           (response) => {
             this.schedule_table.length = 0;
@@ -901,17 +899,16 @@ export default {
       if (!this.current_date || !this.form_schedule.start_time || !this.form_schedule.task_id) return;
       axios
         .post('/api/schedules', {
-          headers: {
-            'access-token': localStorage.getItem('access-token'),
-            uid: localStorage.getItem('uid'),
-            client: localStorage.getItem('client'),
-          },
           schedule: {
             start_date: current_date_str,
             start_time: this.form_schedule.start_time,
             task_id: this.form_schedule.task_id,
           },
-        })
+        },{headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },})
         .then(
           (response) => {
             let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
@@ -936,7 +933,7 @@ export default {
             'access-token': localStorage.getItem('access-token'),
             uid: localStorage.getItem('uid'),
             client: localStorage.getItem('client'),
-          },
+          }
       }).then(
         (response) => {
           let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)

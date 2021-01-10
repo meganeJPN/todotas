@@ -8,7 +8,7 @@ class Api::SchedulesController < ApplicationController
     @s_show_list = []
     @s_hide_list = []
     @schedule_table =[]
-    @schedules = Schedule.eager_load(:users).where(users: {id: current_v1_user.id}).where(start_date: params[:start_date])
+    @schedules = Schedule.where(user_id: current_v1_user.id).where(start_date: params[:start_date])
     s_rowspan = {}
     CONST_TIME_PITCH_NUM.times.map.each_with_index do |value, i|
       time = Time.zone.parse(params[:start_date]+" "+CONST_START_TIME)+CONST_TIME_PITCH.minutes*i

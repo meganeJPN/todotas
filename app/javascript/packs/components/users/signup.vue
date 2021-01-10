@@ -33,7 +33,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="signUp"
+          <el-button style="float: right" type="primary" @click="signUp('form')"
             >Sign up</el-button
           >
         </el-form-item>
@@ -67,7 +67,6 @@
 <script>
 import axios from 'axios';
 import { reject } from 'lodash';
-
 export default {
   data: function() {
     var validatePass = (rule, value, callback) => {
@@ -104,13 +103,30 @@ export default {
   },
   mounted: function() {},
   methods: {
-    signUp: function(){
-      if(!this.form.name || !this.form.email || !this.form.password || !this.form.confirm_password) return;
-      axios.post('/v1/auth',{
+    signUp: function(formName){
+      this.$refs[formName].validate((valid)=>{
+        if(valid){
+          axios.post('/v1/auth',{
         name: this.form.name,
         email: this.form.email,
         password: this.form.password,
       }).then((response)=>{
+        axios.post('/v1/auth/sign_in',{
+        email: this.form.email,
+        password: this.form.password,
+      }).then((response)=>{
+        localStorage.setItem('access-token', response.headers['access-token'])
+        localStorage.setItem('client', response.headers.client)
+        localStorage.setItem('uid', response.headers.uid)
+        localStorage.setItem('token-type', response.headers['token-type'])
+        this.$router.push('/') 
+      },
+      (error) => {
+        for (let i =0; i<error.response.data.errors.length; i++){
+          this.$message.error(error.response.data.errors[i]);
+          }
+      }
+      );
       },
       (error) => {
         for (let i =0; i<error.response.data.errors.full_messages.length; i++){
@@ -118,6 +134,11 @@ export default {
           }
       }
       );
+        }else{
+          console.log(Login)
+          return false;
+        }
+      });
     },
   },
 };
