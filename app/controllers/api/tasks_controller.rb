@@ -1,10 +1,11 @@
 class Api::TasksController < ApplicationController
   protect_from_forgery
   before_action :set_task, only: [:show, :update, :destroy]
+  before_action :authenticate_v1_user!
 
   # GET /tasks
   def index
-    @tasks = Task.order('updated_at DESC')
+    @tasks = Task.eager_load(:users).where(users: {id: current_user.id}).order(created_at: "DESC")
     @tasks_working = Task.where(completed: false).order('updated_at DESC')
     @tasks_finished = Task.where(completed: true)
     @tasks_assigned = Task.eager_load(:schedules).where(tasks: {completed: false},schedules: {start_date: params[:current_date]})
@@ -15,7 +16,7 @@ class Api::TasksController < ApplicationController
 
   # POST /tasks
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.build(task_params)
 
     if @task.save
       render :show, status: :created

@@ -105,7 +105,7 @@ export default {
   mounted: function() {},
   methods: {
     signUp: function(){
-      if(!this.form.name || !this.form.password || !this.form.confirm_password) return;
+      if(!this.form.name || !this.form.email || !this.form.password || !this.form.confirm_password) return;
       axios.post('/v1/auth',{
         name: this.form.name,
         email: this.form.email,

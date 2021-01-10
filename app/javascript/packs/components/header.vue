@@ -3,7 +3,7 @@
 
   <el-header style="text-align: right; font-size: 12px">
     <el-dropdown>
-      <i class="el-icon-user" style="margin-right: 15px"></i>
+      <i class="el-icon-menu" style="margin-right: 15px"></i>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item
           ><router-link to="/">todotas</router-link></el-dropdown-item
@@ -12,7 +12,7 @@
         <el-dropdown-item
           ><router-link to="/user">ユーザー情報</router-link></el-dropdown-item
         >
-        <el-dropdown-item
+        <!-- <el-dropdown-item
           ><router-link to="/users/signup"
             >サインアップ</router-link
           ></el-dropdown-item
@@ -21,33 +21,42 @@
           ><router-link to="/users/login"
             >ログイン</router-link
           ></el-dropdown-item
-        >
+        > -->
         <el-dropdown-item
-          ><router-link to="/user">ログアウト</router-link></el-dropdown-item
+          ><el-button type="text" @click="signOut">ログアウト</el-button></el-dropdown-item
         >
       </el-dropdown-menu>
     </el-dropdown>
-    <span>Tom</span>
-
-    <el-avatar :size="30" :src="circleUrl"></el-avatar>
   </el-header>
 </template>
 
 <script>
+import axios from 'axios';
+import { reject } from 'lodash';
+
 export default {
   data: function() {
-    const item = {
-      date: '2016-05-02',
-      name: 'Tom',
-      address: 'No. 189, Grove St, Los Angeles',
-    };
     return {
-      ActiveBtn: false,
-      tableData: Array(20).fill(item),
-      circleUrl:
-        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      sizeList: ['large', 'medium', 'small'],
+     
     };
+  },
+  mounted: function() {},
+  methods: {
+    signOut: function(){
+      axios.delete('/v1/auth/sign_out',{
+        headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+      }).then((response)=>{
+        this.$router.push('/users/login') 
+      },
+      (error) => {
+        this.$router.push('/users/login') 
+      }
+      );
+    },
   },
 };
 </script>
