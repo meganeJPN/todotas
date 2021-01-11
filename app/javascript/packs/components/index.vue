@@ -514,7 +514,7 @@ export default {
   },
   formInsertTask: function(){
     let form_task;
-    form_task = this.tasks_working.find(t => t.id === this.form_schedule.task_id)
+    form_task = this.tasks_not_assigned.find(t => t.id === this.form_schedule.task_id)
     this.form.content = form_task.content
     this.form.comment = form_task.comment
     this.form.duration = form_task.duration
@@ -800,6 +800,10 @@ export default {
               response.data.task.duration;
             this.tasks_working[this.tasks_working_index].comment =
               response.data.task.comment;
+            let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === response.data.task.id)
+            this.tasks_not_assigned[tasks_not_assigned_index].content = response.data.task.content;
+            this.tasks_not_assigned[tasks_not_assigned_index].duration = response.data.task.duration;
+            this.tasks_not_assigned[tasks_not_assigned_index].comment = response.data.task.comment;
             this.form.content = '';
             this.form.comment = '';
             this.form.duration = 15;
