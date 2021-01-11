@@ -290,7 +290,7 @@
       <div>
         <el-radio-group v-model="form_schedule.start_time">
           <el-radio-button v-for="time in time_span" :label="time"></el-radio-button>
-        </el-radio-group>
+        </el-radio-group> 
       </div>
       </el-form-item>
       <el-form-item label="アサインするタスク" :label-width="formLabelWidth">

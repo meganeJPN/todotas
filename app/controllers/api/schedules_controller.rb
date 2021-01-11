@@ -65,20 +65,12 @@ class Api::SchedulesController < ApplicationController
     @schedule.start_time = start_time
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
     schedule_end_time_str = @schedule.end_time.strftime("%H:%M")
-    if @schedule.end_time > Time.zone.parse(params[:schedule][:start_date]+" "+CONST_END_TIME)
-      @schedule.errors.add(:base, "終了時間が#{CONST_END_TIME}を超えるスケジュールを登録することはできません。")
-      return render json: @schedule.errors, status: :unprocessable_entity
-    end
-    if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date], user_id: current_v1_user.id)
-      @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")
-      return render json: @schedule.errors, status: :unprocessable_entity
-    end
-
+    return render json: {errors: @schedule.errors.add(:base, "終了時間が#{CONST_END_TIME}を超えるスケジュールを登録することはできません。")}, status: :unprocessable_entity if @schedule.end_time > Time.zone.parse(params[:schedule][:start_date]+" "+CONST_END_TIME)    
+    return render json: {errors: @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")},status: :unprocessable_entity if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date], user_id: current_v1_user.id)
     current_day_schedules = Schedule.where(start_date: params[:schedule][:start_date])
     current_day_schedules.each do |current_day_schedule|
       if isDatetimeOverlap(@schedule.start_time,@schedule.end_time,current_day_schedule.start_time,current_day_schedule.end_time)
-        @schedule.errors.add(:base, "その時間帯には既に別のタスクが登録されています。")
-        return render json: @schedule.errors, status: :unprocessable_entity
+        return render json: {errors: @schedule.errors.add(:base, "その時間帯には既に別のタスクが登録されています。")}, status: :unprocessable_entity
       end
     end
     logger.debug(params[:schedule][:start_date])
