@@ -82,6 +82,7 @@ class Api::SchedulesController < ApplicationController
     logger.debug(schedule_end_time_str)
 
     if @schedule.save
+      @task = Task.find(@schedule.task_id)
       @schedule_table = createScheduleTableArray(params[:schedule][:start_date], params[:schedule][:start_time], schedule_end_time_str, @schedule)
       render :show, status: :created
     else
@@ -101,6 +102,7 @@ class Api::SchedulesController < ApplicationController
     destroy_schedule = @schedule
     if @schedule.destroy
       @schedule_table=deleteScheduleTableArray(destroy_schedule)
+      @task = Task.find(destroy_schedule.task_id)
       render :show, status: :ok
     end
   end

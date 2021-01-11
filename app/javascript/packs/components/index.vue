@@ -751,6 +751,8 @@ export default {
           localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
+          let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === task.id)
+          this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
           this.$notify({
             title: 'Success',
             type: 'success',
@@ -833,10 +835,12 @@ export default {
       ).then(
         (response) => {
           localStorage.setItem('access-token', response.headers['access-token'])
-            localStorage.setItem('client', response.headers.client)
-            localStorage.setItem('uid', response.headers.uid)
-            localStorage.setItem('token-type', response.headers['token-type'])
+          localStorage.setItem('client', response.headers.client)
+          localStorage.setItem('uid', response.headers.uid)
+          localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(this.tasks_working_index, 1);
+          let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === this.task_id)
+          this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
           this.dialogShowTaskVisible = false;
            this.$notify({
             title: 'Success',
@@ -885,6 +889,7 @@ export default {
      console.log("time↓")
      console.log(time)
      this.time_span[0] = time.getHours().toString().padStart(2,'0') +":" + time.getMinutes().toString().padStart(2,'0');
+     this.form_schedule.task_id = ""
      this.form_dialogShowSchedule.start_time=""
      this.form_dialogShowSchedule.end_time=""
      this.form_dialogShowSchedule.content=""
@@ -912,13 +917,14 @@ export default {
     fetchSchedules: function() {
       let current_date_str = this.dateToStr(this.current_date);
       axios
-        .get('/api/schedules', { headers: {
+        .get('/api/schedules', {
+          headers: {
             'access-token': localStorage.getItem('access-token'),
             uid: localStorage.getItem('uid'),
             client: localStorage.getItem('client'),
           },
-          params: { start_date: current_date_str }, }
-          )
+            params: { start_date: current_date_str }
+          })
         .then(
           (response) => {
             this.schedule_table.length = 0;
@@ -963,6 +969,8 @@ export default {
             localStorage.setItem('client', response.headers.client)
             localStorage.setItem('uid', response.headers.uid)
             localStorage.setItem('token-type', response.headers['token-type'])
+            let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === this.form_schedule.task_id)
+            this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
             let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
             let j =0
             for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){
@@ -1005,6 +1013,7 @@ export default {
               this.schedule_table[i] = response.data.schedule_table[j]
               j++
           }
+          this.tasks_not_assigned.unshift(response.data.task);
           this.schedule_id=''
           this.dialogShowScheduleVisible = false;
         },
