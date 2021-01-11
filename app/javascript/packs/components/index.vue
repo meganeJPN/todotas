@@ -849,9 +849,9 @@ export default {
           let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === this.task_id)
           this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
           this.dialogShowTaskVisible = false;
-            this.form.content = '';
-            this.form.duration = 15;
-            this.form.comment='';
+          this.form.content = '';
+          this.form.duration = 15;
+          this.form.comment='';
            this.$notify({
             title: 'Success',
             type: 'success',
@@ -864,6 +864,10 @@ export default {
           localStorage.setItem('client', error.response.headers.client)
           localStorage.setItem('uid', error.response.headers.uid)
           localStorage.setItem('token-type', error.response.headers['token-type'])
+          this.dialogShowTaskVisible = false;
+          this.form.content = '';
+          this.form.duration = 15;
+          this.form.comment='';
           for (let i =0; i<error.response.data.errors.length; i++){
             this.$notify({
               title: 'Error',
