@@ -297,12 +297,12 @@
         
           <el-select v-model="form_schedule.task_id" placeholder="Select" v-on:change="formInsertTask()">
             <el-option
-              v-for="task_working in tasks_working"
-              :key="task_working.id"
-              :label="task_working.content"
-              :value="task_working.id">
-              <span style="float: left">{{ task_working.content }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ task_working.duration }}分</span>
+              v-for="task in tasks_not_assigned"
+              :key="task.id"
+              :label="task.content"
+              :value="task.id">
+              <span style="float: left">{{ task.content }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ task.duration }}分</span>
             </el-option>
           </el-select>
         
@@ -673,7 +673,13 @@ export default {
             }
           },
           (error) => {
-            console.log(error, response);
+             for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
           }
         );
     },
@@ -720,6 +726,13 @@ export default {
           },
           (error) => {
             console.log(error);
+             for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
           }
         );
     },
@@ -745,7 +758,13 @@ export default {
           });
         },
         (error) => {
-          console.log(error);
+           for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
         }
       );
     },
@@ -908,7 +927,13 @@ export default {
             }
           },
           (error) => {
-            console.log(error);
+             for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
           }
         );
     },
@@ -950,7 +975,14 @@ export default {
             this.dialogAssignTaskVisible = false;
           },
           (error) => {
-            console.log(error);
+             for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
+            
           }
         );
     },
@@ -977,7 +1009,13 @@ export default {
           this.dialogShowScheduleVisible = false;
         },
         (error) => {
-          console.log(error);
+           for (let i =0; i<error.response.data.errors.length; i++){
+            this.$notify({
+              title: 'Error',
+              type: 'error',
+              message: error.response.data.errors[i],
+            });
+          }
         }
       );
     },
