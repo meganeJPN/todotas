@@ -753,6 +753,9 @@ export default {
           this.tasks_finished.unshift(response.data.task);
           let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === task.id)
           this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
+           this.form.content = '';
+            this.form.duration = '';
+            this.form.comment='';
           this.$notify({
             title: 'Success',
             type: 'success',
@@ -980,6 +983,9 @@ export default {
             console.log(this.schedule_table)
             this.form_schedule.start_time = '';
             this.form_schedule.task_id = '';
+            this.form.content = '';
+            this.form.duration = '';
+            this.form.comment='';
             this.dialogAssignTaskVisible = false;
           },
           (error) => {
