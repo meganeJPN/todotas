@@ -65,7 +65,11 @@ class Api::SchedulesController < ApplicationController
     @schedule.start_time = start_time
     @schedule.end_time = @schedule.start_time + Task.find(@schedule.task_id).duration * 60
     schedule_end_time_str = @schedule.end_time.strftime("%H:%M")
-    if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date])
+    if @schedule.end_time > Time.zone.parse(params[:schedule][:start_date]+" "+CONST_END_TIME)
+      @schedule.errors.add(:base, "終了時間が#{CONST_END_TIME}を超えるスケジュールを登録することはできません。")
+      return render json: @schedule.errors, status: :unprocessable_entity
+    end
+    if Schedule.exists?(task_id: params[:schedule][:task_id],start_date: params[:schedule][:start_date], user_id: current_v1_user.id)
       @schedule.errors.add(:base, "このタスクは既にスケジュールに登録済みです。")
       return render json: @schedule.errors, status: :unprocessable_entity
     end
