@@ -754,7 +754,7 @@ export default {
           let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === task.id)
           this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
            this.form.content = '';
-            this.form.duration = '';
+            this.form.duration = 15;
             this.form.comment='';
           this.$notify({
             title: 'Success',
