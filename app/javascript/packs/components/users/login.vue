@@ -2,7 +2,7 @@
 <div>
 <el-card class="box-card login">
 
-  <div slot="header" class="clearfix">
+  <div slot="header" class="clearfix center">
     <span>Login</span>
   </div>
 
