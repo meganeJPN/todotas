@@ -5,9 +5,7 @@
     <el-dropdown>
       <i class="el-icon-menu" style="margin-right: 15px"></i>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          ><router-link to="/">todotas</router-link></el-dropdown-item
-        >
+        
 
         <el-dropdown-item
           ><router-link to="/users/account">ユーザー情報</router-link></el-dropdown-item
