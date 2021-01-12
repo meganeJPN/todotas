@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card login">
+    <el-card class="box-card login" shadow="never">
       <div slot="header" class="clearfix center">
         <span>SIGN UP</span>
       </div>

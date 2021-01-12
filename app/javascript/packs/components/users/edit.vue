@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card login" shadow="never">
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix center">
         <span>ユーザー情報編集</span>
       </div>
       <el-form
@@ -12,10 +12,10 @@
         label-position="top"
       >
         <el-form-item label="name">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.name" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Email">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.email" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Password" prop="pass">
           <el-input
@@ -33,9 +33,15 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="onSubmit"
+          <el-button style="float: right" type="primary" @click="edit('form')"
             >更新</el-button
           >
+        </el-form-item>
+         <el-form-item>
+          <router-link to="/users/account">
+          <el-button style="float: right" type="primary"
+            >戻る</el-button
+          ></router-link>
         </el-form-item>
       </el-form>
       <div class="center">
@@ -67,7 +73,6 @@
 <script>
 import axios from 'axios';
 import { reject } from 'lodash';
-
 export default {
   data: function() {
     var validatePass = (rule, value, callback) => {
@@ -92,6 +97,7 @@ export default {
     return {
       form: {
         name: '',
+        email:'',
         password: '',
         confirm_password: '',
       },
@@ -101,7 +107,63 @@ export default {
       },
     };
   },
-  mounted: function() {},
-  methods: {},
+  mounted: function() {
+    this.fetchUser();
+  },
+  methods: {
+    fetchUser: function(){
+      axios.get('/v1/auth/validate_token', {
+        headers: {
+          'access-token': localStorage.getItem('access-token'),
+          uid: localStorage.getItem('uid'),
+          client: localStorage.getItem('client'),
+        },
+      }).then((response)=>{
+        console.log(response.data)
+        console.log(response.data.data.name)
+        console.log(response.data.data.email)
+        this.form.name = response.data.data.name
+        this.form.email = response.data.data.email
+      },
+      (error) =>{
+        for (let i =0; i<error.response.data.errors.length; i++){
+          this.$notify({
+            title: 'Error',
+            type: 'error',
+            message: error.response.data.errors[i],
+          });
+        }
+      }
+      );
+    },
+    edit: function(formName){
+      this.$refs[formName].validate((valid)=>{
+        if(valid){
+          axios.put('/v1/auth',{
+          name: this.form.name,
+          email: this.form.email,
+          password: this.form.password
+          },
+        { headers: {
+            'access-token': localStorage.getItem('access-token'),
+            uid: localStorage.getItem('uid'),
+            client: localStorage.getItem('client'),
+          },
+      }).then((response)=>{
+        this.$router.push('/users/account') 
+      },
+      (error) => {
+        for (let i =0; i<error.response.data.errors.full_messages.length; i++){
+          this.$message.error(error.response.data.errors.full_messages[i]);
+          }
+      }
+      );
+        }else{
+          console.log(Login)
+          return false;
+        }
+      });
+    },
+  },
 };
 </script>

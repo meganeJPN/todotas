@@ -5,27 +5,27 @@
         <span>ユーザー情報</span>
       </div>
       <el-form
-        ref="form"
         :model="form"
-        :rules="rules"
         label-width="180px"
         label-position="top"
       >
         <el-form-item label="ユーザー名">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.name" readonly></el-input>
         </el-form-item>
         <el-form-item label="EMAIL">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.email" readonly></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="onSubmit"
+          <router-link to="/users/edit">
+          <el-button style="float: right" type="primary"
             >ユーザー情報編集</el-button
-          >
+          ></router-link>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="onSubmit"
+          <router-link to="/">
+          <el-button style="float: right" type="primary"
             >戻る</el-button
-          >
+          ></router-link>
         </el-form-item>
       </el-form>
     </el-card>
@@ -55,38 +55,42 @@ import { reject } from 'lodash';
 
 export default {
   data: function() {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please input the password'));
-      } else {
-        if (this.form.confirm_password !== '') {
-          this.$refs.form.validateField('confirm_password');
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please input the password again'));
-      } else if (value !== this.form.password) {
-        callback(new Error("Two inputs don't match!"));
-      } else {
-        callback();
-      }
-    };
     return {
       form: {
         name: '',
-        password: '',
-        confirm_password: '',
-      },
-      rules: {
-        pass: [{ validator: validatePass, trigger: 'blur' }],
-        confirm_password: [{ validator: validatePass2, trigger: 'blur' }],
+        email:'',
       },
     };
   },
-  mounted: function() {},
-  methods: {},
+  mounted: function() {
+    this.fetchUser();
+  },
+  methods: {
+    fetchUser: function(){
+      axios.get('/v1/auth/validate_token', {
+        headers: {
+          'access-token': localStorage.getItem('access-token'),
+          uid: localStorage.getItem('uid'),
+          client: localStorage.getItem('client'),
+        },
+      }).then((response)=>{
+        console.log(response.data)
+        console.log(response.data.data.name)
+        console.log(response.data.data.email)
+        this.form.name = response.data.data.name
+        this.form.email = response.data.data.email
+      },
+      (error) =>{
+        for (let i =0; i<error.response.data.errors.length; i++){
+          this.$notify({
+            title: 'Error',
+            type: 'error',
+            message: error.response.data.errors[i],
+          });
+        }
+      }
+  );
+    }
+  },
 };
 </script>

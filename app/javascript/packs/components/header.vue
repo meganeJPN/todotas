@@ -10,7 +10,7 @@
         >
 
         <el-dropdown-item
-          ><router-link to="/user">ユーザー情報</router-link></el-dropdown-item
+          ><router-link to="/users/account">ユーザー情報</router-link></el-dropdown-item
         >
         <!-- <el-dropdown-item
           ><router-link to="/users/signup"
