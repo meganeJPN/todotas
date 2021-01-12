@@ -181,7 +181,7 @@
       :visible.sync="dialogCreateTaskVisible"
       width="80%"
     >
-      <el-form :model="form" :rules="rules" ref="form">
+      <el-form :model="form" :rules="rules" ref="form" label-position="top">
         <el-form-item label="タスク内容" :label-width="formLabelWidth" prop="content">
           <el-input
             v-model="form.content"
@@ -232,7 +232,7 @@
       :visible.sync="dialogShowTaskVisible"
       width="80%"
     >
-      <el-form :model="form"　:rules="rules" ref="form">
+      <el-form :model="form"　:rules="rules" ref="form" label-position="top">
         <el-form-item label="タスク内容" :label-width="formLabelWidth"　prop="content">
           <el-input
             v-model="form.content"
@@ -285,7 +285,7 @@
       :visible.sync="dialogAssignTaskVisible"
       width="80%"
     >
-      <el-form :model="form_schedule" :rules="rules" ref="form_schedule">
+      <el-form :model="form_schedule" :rules="rules" ref="form_schedule" label-position="top">
       <el-form-item label="開始時間" :label-width="formLabelWidth"　prop="start_time">
       <div>
         <el-radio-group v-model="form_schedule.start_time">
@@ -361,16 +361,8 @@
       :visible.sync="dialogShowScheduleVisible"
       width="80%"
     >
-      <el-form :model="form_schedule">
-      <el-form-item label="作業時間" :label-width="formLabelWidth">
-      <el-col :span="6">
-      <span v-model="form_dialogShowSchedule.start_time">{{form_dialogShowSchedule.start_time}}</span>
-      </el-col>
-      <el-col class="line" :span="1">-</el-col>
-      <el-col :span="6">
-       <span v-model="form_dialogShowSchedule.end_time">{{form_dialogShowSchedule.end_time}}</span>
-       </el-col>
-      </el-form-item>
+    
+      <el-form :model="form_schedule" label-position="top">
         <el-form-item label="タスク内容" :label-width="formLabelWidth">
           <el-input
             v-model="form_dialogShowSchedule.content"
@@ -380,6 +372,15 @@
             readonly
           ></el-input>
         </el-form-item>
+      <el-form-item label="作業時間" :label-width="formLabelWidth">
+      <el-col :span="6">
+      <span>{{form_dialogShowSchedule.start_time}}</span>
+      </el-col>
+      <el-col class="line" :span="1">-</el-col>
+      <el-col :span="6">
+       <span>{{form_dialogShowSchedule.end_time}}</span>
+       </el-col>
+      </el-form-item>
         <el-form-item label="所要時間" :label-width="formLabelWidth">
           <div class="duration-slider">
             <el-slider
