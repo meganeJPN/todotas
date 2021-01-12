@@ -54,9 +54,9 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqggOTJ08kwdo9DxnySy7ubozXl8G5
 ## 使用予定 Gem
 
 - devise
+- devise_token_auth
 - webpacker
 - bcrypt
-- bootstrap
 - jquery-rails
 - rspec-rails
 - factory_bot_rails
@@ -65,6 +65,7 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqggOTJ08kwdo9DxnySy7ubozXl8G5
 - launchy
 - webdrivers
 - foreman
+- rack-cors
 
 ## 使用予定の技術
 
