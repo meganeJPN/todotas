@@ -17,8 +17,10 @@ class Api::TasksController < ApplicationController
 
   # POST /tasks
   def create
+    logger.debug(task_params)
     @task = current_v1_user.tasks.build(task_params)
-
+    @task.duration = @task.duration.to_i
+    
     if @task.save
       render :show, status: :created
     else
