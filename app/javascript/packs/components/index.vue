@@ -39,7 +39,24 @@
         <el-table-column label="" width="50px">
             <template slot-scope="scope">
               <el-button
+                v-if="tasks_not_assigned_nil.some(task => task.id === scope.row.id)"
+                type="default"
+                icon="el-icon-check"
+                circle
+                size="mini"
+                @click="doneTask(scope.$index, scope.row)"
+              ></el-button>
+              <el-button
+                v-else-if="tasks_assigned.some(task => task.id === scope.row.id)"
                 type="primary"
+                icon="el-icon-check"
+                circle
+                size="mini"
+                @click="doneTask(scope.$index, scope.row)"
+              ></el-button>
+              <el-button
+                v-else
+                type="warning"
                 icon="el-icon-check"
                 circle
                 size="mini"
@@ -49,7 +66,6 @@
           </el-table-column>
           <el-table-column label="">
             <template slot-scope="scope">
-             
                 <div slot="reference" class="name-wrapper">
                   <el-button
                     type="text"
@@ -59,7 +75,6 @@
                     }}</span></el-button
                   >
                 </div>
-          
             </template>
           </el-table-column>
           
@@ -450,6 +465,8 @@ export default {
       tasks_working: [],
       tasks_finished: [],
       tasks_not_assigned: [],
+      tasks_not_assigned_other: [],
+      tasks_not_assigned_nil: [],
       tasks_assigned: [],
       task: {},
       id: '',
@@ -702,14 +719,17 @@ export default {
             for (let i = 0; i < response.data.tasks_working.length; i++) {
               this.tasks_working.push(response.data.tasks_working[i]);
             }
-            for (let i = 0; i < response.data.tasks_finished.length; i++) {
-              this.tasks_finished.push(response.data.tasks_finished[i]);
+            for (let j = 0; j < response.data.tasks_finished.length; j++) {
+              this.tasks_finished.push(response.data.tasks_finished[j]);
             }
-            for (let j = 0; j < response.data.tasks_assigned.length; j++) {
-              this.tasks_assigned.push(response.data.tasks_assigned[j]);
+            for (let k = 0; k < response.data.tasks_assigned.length; k++) {
+              this.tasks_assigned.push(response.data.tasks_assigned[k]);
             }
-            for (let k = 0; k < response.data.tasks_not_assigned.length; k++) {
-              this.tasks_not_assigned.push(response.data.tasks_not_assigned[k]);
+            for (let l = 0; l < response.data.tasks_not_assigned.length; l++) {
+              this.tasks_not_assigned.push(response.data.tasks_not_assigned[l]);
+            }
+            for (let m = 0; m < response.data.tasks_not_assigned_nil.length; m++) {
+              this.tasks_not_assigned_nil.push(response.data.tasks_not_assigned_nil[m]);
             }
           },
           (error) => {
@@ -755,6 +775,7 @@ export default {
             localStorage.setItem('token-type', response.headers['token-type'])
             this.tasks_working.unshift(response.data.task);
             this.tasks_not_assigned.unshift(response.data.task);
+            this.tasks_not_assigned_nil.unshift(response.data.task);
             this.form.content = '';
             this.form.comment = '';
             this.form.duration = 15;
@@ -791,8 +812,13 @@ export default {
           localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(index, 1);
           this.tasks_finished.unshift(response.data.task);
+          let tasks_assigned_index = this.tasks_assigned.findIndex(task_assigned => task_assigned.id === this.task_id)
+          this.tasks_assigned.splice(tasks_assigned_index,1)
           let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === task.id)
           this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
+          let tasks_not_assigned_nil_index = this.tasks_not_assigned_nil.findIndex(task_not_assigned_nil => task_not_assigned_nil.id === task.id)
+          this.tasks_not_assigned_nil.splice(tasks_not_assigned_nil_index,1)
+          
            this.form.content = '';
             this.form.duration = 15;
             this.form.comment='';
@@ -886,8 +912,12 @@ export default {
           localStorage.setItem('uid', response.headers.uid)
           localStorage.setItem('token-type', response.headers['token-type'])
           this.tasks_working.splice(this.tasks_working_index, 1);
+          let tasks_assigned_index = this.tasks_assigned.findIndex(task_assigned => task_assigned.id === this.task_id)
+          this.tasks_assigned.splice(tasks_assigned_index,1)
           let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === this.task_id)
           this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
+          let tasks_not_assigned_nil_index = this.tasks_not_assigned_nil.findIndex(task_not_assigned_nil => task_not_assigned_nil.id === this.task_id)
+          this.tasks_not_assigned_nil.splice(tasks_not_assigned_nil_index,1)
           this.dialogShowTaskVisible = false;
           this.form.content = '';
           this.form.duration = 15;
@@ -917,6 +947,9 @@ export default {
           }
         }
       );
+    },
+    tasksAssigned: function(task_working){
+
     },
     dialogCreateTask: function() {
       this.dialogCreateTaskVisible = true;
@@ -1023,8 +1056,15 @@ export default {
             localStorage.setItem('client', response.headers.client)
             localStorage.setItem('uid', response.headers.uid)
             localStorage.setItem('token-type', response.headers['token-type'])
+            console.log("this.form_schedule.task_id")
+            console.log(this.form_schedule.task_id)
+            console.log("this.form_schedule")
+            console.log(this.form_schedule)
+            this.tasks_assigned.unshift(response.data.task);
             let tasks_not_assigned_index = this.tasks_not_assigned.findIndex(task_not_assigned => task_not_assigned.id === this.form_schedule.task_id)
             this.tasks_not_assigned.splice(tasks_not_assigned_index,1)
+            let tasks_not_assigned_nil_index = this.tasks_not_assigned_nil.findIndex(task_not_assigned_nil => task_not_assigned_nil.id === this.form_schedule.task_id)
+            this.tasks_not_assigned_nil.splice(tasks_not_assigned_nil_index,1)
             let schedule_table_index = this.schedule_table.findIndex(schedule => schedule.time === response.data.schedule_table[0].time)
             let j =0
             for (let i = schedule_table_index; i<schedule_table_index+response.data.schedule_table.length; i++){
@@ -1070,7 +1110,21 @@ export default {
               this.schedule_table[i] = response.data.schedule_table[j]
               j++
           }
+          console.log("this.tasks_assignedのスプライス前")
+          console.log(this.tasks_assigned)
+          console.log("this.form_schedule.task_id")
+          console.log(response.data.schedule.task_id)
+          let tasks_assigned_index = this.tasks_assigned.findIndex(task_assigned => task_assigned.id === response.data.schedule.task_id)
+          console.log("this.tasks_assigned_index")
+          console.log(tasks_assigned_index)
+          this.tasks_assigned.splice(tasks_assigned_index,1)
+          console.log("this.tasks_assignedのスプライス後")
+          console.log(this.tasks_assigned)
           this.tasks_not_assigned.unshift(response.data.task);
+          this.tasks_not_assigned_nil.length = 0
+          for (let i = 0; i<response.data.tasks_not_assigned_nil.length; i++){
+              this.tasks_not_assigned_nil[i] = response.data.tasks_not_assigned_nil[i]   
+          }
           this.schedule_id=''
           this.dialogShowScheduleVisible = false;
         },
@@ -1101,6 +1155,7 @@ export default {
       console.log(`今日は${this.current_date}です。`);
       this.current_date_display = this.dateToStrForDisplay(this.current_date)
       console.log(this.current_date_display);
+      this.fetchTasks();
       this.fetchSchedules();
       console.log('this.tasks');
       console.log(this.tasks);
@@ -1112,7 +1167,7 @@ export default {
       this.current_date_display = this.dateToStrForDisplay(day)
       console.log(this.current_date_display);
       console.log(`${this.current_date}にカレントデイトを変更しました`);
-      
+      this.fetchTasks();
       this.fetchSchedules();
     },
     currentDateBefore: function(day) {
@@ -1122,6 +1177,7 @@ export default {
       console.log(`${this.current_date}にカレントデイトを変更しました`);
       this.current_date_display = this.dateToStrForDisplay(day)
       console.log(this.current_date_display);
+      this.fetchTasks();
       this.fetchSchedules();
     },
     dateToStr: function(date) {

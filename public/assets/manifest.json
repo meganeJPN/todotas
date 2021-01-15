@@ -5,8 +5,8 @@
   "components/footer.js.map": "/assets/js/components/footer-7b65bd20a586fa11ab6d.js.map",
   "components/header.js": "/assets/js/components/header-dee6443f6ef25df8f5f9.js",
   "components/header.js.map": "/assets/js/components/header-dee6443f6ef25df8f5f9.js.map",
-  "components/index.js": "/assets/js/components/index-b8a92586ba60a03a180a.js",
-  "components/index.js.map": "/assets/js/components/index-b8a92586ba60a03a180a.js.map",
+  "components/index.js": "/assets/js/components/index-b0d644d902ab394f9f63.js",
+  "components/index.js.map": "/assets/js/components/index-b0d644d902ab394f9f63.js.map",
   "components/user.js": "/assets/js/components/user-111129ef4b1b5927c9a9.js",
   "components/user.js.map": "/assets/js/components/user-111129ef4b1b5927c9a9.js.map",
   "components/users/account.js": "/assets/js/components/users/account-4d7ea47539b569924f4a.js",
@@ -44,10 +44,10 @@
     },
     "components/index": {
       "js": [
-        "/assets/js/components/index-b8a92586ba60a03a180a.js"
+        "/assets/js/components/index-b0d644d902ab394f9f63.js"
       ],
       "js.map": [
-        "/assets/js/components/index-b8a92586ba60a03a180a.js.map"
+        "/assets/js/components/index-b0d644d902ab394f9f63.js.map"
       ]
     },
     "components/user": {
@@ -100,18 +100,18 @@
     },
     "router/router": {
       "js": [
-        "/assets/js/router/router-3bacc9a44b53727498c2.js"
+        "/assets/js/router/router-4aa554c5161c3d547168.js"
       ],
       "js.map": [
-        "/assets/js/router/router-3bacc9a44b53727498c2.js.map"
+        "/assets/js/router/router-4aa554c5161c3d547168.js.map"
       ]
     },
     "todotas": {
       "js": [
-        "/assets/js/todotas-3273de3933592ac680a1.js"
+        "/assets/js/todotas-ddcf41953c2ec376aef2.js"
       ],
       "js.map": [
-        "/assets/js/todotas-3273de3933592ac680a1.js.map"
+        "/assets/js/todotas-ddcf41953c2ec376aef2.js.map"
       ]
     }
   },
@@ -119,8 +119,8 @@
   "hello_vue.js.map": "/assets/js/hello_vue-0446471c4b0f01a33046.js.map",
   "media/fonts/element-icons.ttf": "/assets/media/fonts/element-icons-45201881.ttf",
   "media/fonts/element-icons.woff": "/assets/media/fonts/element-icons-313f7dac.woff",
-  "router/router.js": "/assets/js/router/router-3bacc9a44b53727498c2.js",
-  "router/router.js.map": "/assets/js/router/router-3bacc9a44b53727498c2.js.map",
-  "todotas.js": "/assets/js/todotas-3273de3933592ac680a1.js",
-  "todotas.js.map": "/assets/js/todotas-3273de3933592ac680a1.js.map"
+  "router/router.js": "/assets/js/router/router-4aa554c5161c3d547168.js",
+  "router/router.js.map": "/assets/js/router/router-4aa554c5161c3d547168.js.map",
+  "todotas.js": "/assets/js/todotas-ddcf41953c2ec376aef2.js",
+  "todotas.js.map": "/assets/js/todotas-ddcf41953c2ec376aef2.js.map"
 }
