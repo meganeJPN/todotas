@@ -5,16 +5,16 @@
   "components/footer.js.map": "/assets/js/components/footer-7b65bd20a586fa11ab6d.js.map",
   "components/header.js": "/assets/js/components/header-dee6443f6ef25df8f5f9.js",
   "components/header.js.map": "/assets/js/components/header-dee6443f6ef25df8f5f9.js.map",
-  "components/index.js": "/assets/js/components/index-df0609f984b1d4abb303.js",
-  "components/index.js.map": "/assets/js/components/index-df0609f984b1d4abb303.js.map",
+  "components/index.js": "/assets/js/components/index-b8a92586ba60a03a180a.js",
+  "components/index.js.map": "/assets/js/components/index-b8a92586ba60a03a180a.js.map",
   "components/user.js": "/assets/js/components/user-111129ef4b1b5927c9a9.js",
   "components/user.js.map": "/assets/js/components/user-111129ef4b1b5927c9a9.js.map",
   "components/users/account.js": "/assets/js/components/users/account-4d7ea47539b569924f4a.js",
   "components/users/account.js.map": "/assets/js/components/users/account-4d7ea47539b569924f4a.js.map",
   "components/users/edit.js": "/assets/js/components/users/edit-bb860758731a620af774.js",
   "components/users/edit.js.map": "/assets/js/components/users/edit-bb860758731a620af774.js.map",
-  "components/users/login.js": "/assets/js/components/users/login-3002edb86ac0ba6e3a17.js",
-  "components/users/login.js.map": "/assets/js/components/users/login-3002edb86ac0ba6e3a17.js.map",
+  "components/users/login.js": "/assets/js/components/users/login-fb1c899087a6c444351e.js",
+  "components/users/login.js.map": "/assets/js/components/users/login-fb1c899087a6c444351e.js.map",
   "components/users/signup.js": "/assets/js/components/users/signup-45caa6089c7250caef17.js",
   "components/users/signup.js.map": "/assets/js/components/users/signup-45caa6089c7250caef17.js.map",
   "entrypoints": {
@@ -44,10 +44,10 @@
     },
     "components/index": {
       "js": [
-        "/assets/js/components/index-df0609f984b1d4abb303.js"
+        "/assets/js/components/index-b8a92586ba60a03a180a.js"
       ],
       "js.map": [
-        "/assets/js/components/index-df0609f984b1d4abb303.js.map"
+        "/assets/js/components/index-b8a92586ba60a03a180a.js.map"
       ]
     },
     "components/user": {
@@ -76,10 +76,10 @@
     },
     "components/users/login": {
       "js": [
-        "/assets/js/components/users/login-3002edb86ac0ba6e3a17.js"
+        "/assets/js/components/users/login-fb1c899087a6c444351e.js"
       ],
       "js.map": [
-        "/assets/js/components/users/login-3002edb86ac0ba6e3a17.js.map"
+        "/assets/js/components/users/login-fb1c899087a6c444351e.js.map"
       ]
     },
     "components/users/signup": {
@@ -100,18 +100,18 @@
     },
     "router/router": {
       "js": [
-        "/assets/js/router/router-d8101a0e0d30035add8c.js"
+        "/assets/js/router/router-3bacc9a44b53727498c2.js"
       ],
       "js.map": [
-        "/assets/js/router/router-d8101a0e0d30035add8c.js.map"
+        "/assets/js/router/router-3bacc9a44b53727498c2.js.map"
       ]
     },
     "todotas": {
       "js": [
-        "/assets/js/todotas-5add59a95e5506e40312.js"
+        "/assets/js/todotas-3273de3933592ac680a1.js"
       ],
       "js.map": [
-        "/assets/js/todotas-5add59a95e5506e40312.js.map"
+        "/assets/js/todotas-3273de3933592ac680a1.js.map"
       ]
     }
   },
@@ -119,8 +119,8 @@
   "hello_vue.js.map": "/assets/js/hello_vue-0446471c4b0f01a33046.js.map",
   "media/fonts/element-icons.ttf": "/assets/media/fonts/element-icons-45201881.ttf",
   "media/fonts/element-icons.woff": "/assets/media/fonts/element-icons-313f7dac.woff",
-  "router/router.js": "/assets/js/router/router-d8101a0e0d30035add8c.js",
-  "router/router.js.map": "/assets/js/router/router-d8101a0e0d30035add8c.js.map",
-  "todotas.js": "/assets/js/todotas-5add59a95e5506e40312.js",
-  "todotas.js.map": "/assets/js/todotas-5add59a95e5506e40312.js.map"
+  "router/router.js": "/assets/js/router/router-3bacc9a44b53727498c2.js",
+  "router/router.js.map": "/assets/js/router/router-3bacc9a44b53727498c2.js.map",
+  "todotas.js": "/assets/js/todotas-3273de3933592ac680a1.js",
+  "todotas.js.map": "/assets/js/todotas-3273de3933592ac680a1.js.map"
 }

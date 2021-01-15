@@ -125,7 +125,7 @@
           </div>
         </div>
         <div class="row">
-        <p v-model="current_date_display">{{dateToStrForDisplay(current_date)}}</p>
+        <p>{{dateToStrForDisplay(current_date)}}</p>
       </div>
       </div>
       
@@ -173,7 +173,6 @@
               ></el-button>
             </template>
           </el-table-column>
-        </el-table-column>
       </el-table>
     </div>
 
@@ -215,7 +214,7 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="所要時間" :label-width="formLabelWidth"　prop="duration">
+        <el-form-item label="所要時間" :label-width="formLabelWidth" prop="duration">
           <div class="duration-slider">
             <el-slider
               v-model="form.duration"
@@ -257,8 +256,8 @@
       :visible.sync="dialogShowTaskVisible"
       width="80%"
     >
-      <el-form :model="form"　:rules="rules" ref="form" label-position="top">
-        <el-form-item label="タスク内容" :label-width="formLabelWidth"　prop="content">
+      <el-form :model="form" :rules="rules" ref="form" label-position="top">
+        <el-form-item label="タスク内容" :label-width="formLabelWidth" prop="content">
           <el-input
             v-model="form.content"
             autocomplete="off"
@@ -266,7 +265,7 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="所要時間" :label-width="formLabelWidth"　prop="duration">
+        <el-form-item label="所要時間" :label-width="formLabelWidth" prop="duration">
           <div class="duration-slider">
             <el-slider
               v-model="form.duration"
@@ -311,10 +310,10 @@
       width="80%"
     >
       <el-form :model="form_schedule" :rules="rules" ref="form_schedule" label-position="top">
-      <el-form-item label="開始時間" :label-width="formLabelWidth"　prop="start_time">
+      <el-form-item label="開始時間" :label-width="formLabelWidth" prop="start_time">
       <div>
         <el-radio-group v-model="form_schedule.start_time">
-          <el-radio-button v-for="time in time_span" :label="time"></el-radio-button>
+          <el-radio-button v-for="time in time_span" :label="time" v-bind:key="time.id"></el-radio-button>
         </el-radio-group> 
       </div>
       </el-form-item>
@@ -1210,9 +1209,6 @@ export default {
 .display-block {
   display: block;
 }
-.task-list {
-  
-}
 
 .schedule {
   padding-bottom: 80px;
@@ -1244,13 +1240,10 @@ td.assign {
   background-color: blue;
 }
 
-#next-day {
-}
+
 #today {
   margin-left: 40px;
   margin-right: 40px;
-}
-#before-day {
 }
 input[type='radio'] {
   border: 0px;
