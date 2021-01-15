@@ -57,6 +57,7 @@ class Api::SchedulesController < ApplicationController
       @s_show_list.push(s_show)
       (Task.find(schedule.task_id).duration/15-1).times.map.each_with_index{|i| @s_hide_list.push((schedule.start_time+15.minutes+15.minutes*i).strftime("%H")+(schedule.start_time+15.minutes+15.minutes*i).strftime("%M"))}
     end
+    @tasks_assigned = tasks_assigned
   end
 
   def create
@@ -79,6 +80,7 @@ class Api::SchedulesController < ApplicationController
 
     if @schedule.save
       @task = Task.find(@schedule.task_id)
+      @tasks_assigned = tasks_assigned
       @schedule_table = createScheduleTableArray(params[:schedule][:start_date], params[:schedule][:start_time], schedule_end_time_str, @schedule)
       render :show, status: :created
     else
@@ -98,6 +100,8 @@ class Api::SchedulesController < ApplicationController
     destroy_schedule = @schedule
     if @schedule.destroy
       @schedule_table=deleteScheduleTableArray(destroy_schedule)
+      @tasks_assigned = tasks_assigned
+      @tasks_not_assigned_nil = tasks_not_assigned_nil
       @task = Task.find(destroy_schedule.task_id)
       render :show, status: :ok
     end
@@ -180,6 +184,14 @@ class Api::SchedulesController < ApplicationController
   def isDatetimeOverlap(start1,end1,start2,end2)
     logger.debug(start1 <= end2 && end1 >= start2)
     start1 < end2 && end1 > start2
+  end
+
+  def tasks_assigned
+    Task.where(user_id: current_v1_user.id).eager_load(:schedules).where(tasks: {completed: false}).where("schedules.start_date  >=?", Date.today)
+  end
+
+  def tasks_not_assigned_nil
+    Task.where(user_id: current_v1_user.id).eager_load(:schedules).where(tasks: {completed: false}).where(schedules: {start_date: nil})
   end
 
   def not_login_redirect_to_new_session

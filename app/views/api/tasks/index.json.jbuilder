@@ -22,6 +22,12 @@ json.set! :tasks_not_assigned do
   end
 end
 
+json.set! :tasks_not_assigned_nil do
+  json.array! @tasks_not_assigned_nil do |task_not_assigned_nil|
+    json.extract! task_not_assigned_nil, :id, :content, :comment, :duration, :completed, :created_at, :updated_at
+  end
+end
+
 json.set! :current_user do
   json.extract! current_v1_user, :id ,:name, :email
 end
