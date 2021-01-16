@@ -5,8 +5,8 @@
   "components/footer.js.map": "/assets/js/components/footer-7b65bd20a586fa11ab6d.js.map",
   "components/header.js": "/assets/js/components/header-dee6443f6ef25df8f5f9.js",
   "components/header.js.map": "/assets/js/components/header-dee6443f6ef25df8f5f9.js.map",
-  "components/index.js": "/assets/js/components/index-89e8e3832262fbad2b84.js",
-  "components/index.js.map": "/assets/js/components/index-89e8e3832262fbad2b84.js.map",
+  "components/index.js": "/assets/js/components/index-44b5d303ba9f85e30603.js",
+  "components/index.js.map": "/assets/js/components/index-44b5d303ba9f85e30603.js.map",
   "components/user.js": "/assets/js/components/user-111129ef4b1b5927c9a9.js",
   "components/user.js.map": "/assets/js/components/user-111129ef4b1b5927c9a9.js.map",
   "components/users/account.js": "/assets/js/components/users/account-99ce7c6f1eeed420f549.js",
@@ -44,10 +44,10 @@
     },
     "components/index": {
       "js": [
-        "/assets/js/components/index-89e8e3832262fbad2b84.js"
+        "/assets/js/components/index-44b5d303ba9f85e30603.js"
       ],
       "js.map": [
-        "/assets/js/components/index-89e8e3832262fbad2b84.js.map"
+        "/assets/js/components/index-44b5d303ba9f85e30603.js.map"
       ]
     },
     "components/user": {
@@ -100,18 +100,18 @@
     },
     "router/router": {
       "js": [
-        "/assets/js/router/router-7fe587ee7b023eef0d55.js"
+        "/assets/js/router/router-0a7d6f2f08a8fd756cf8.js"
       ],
       "js.map": [
-        "/assets/js/router/router-7fe587ee7b023eef0d55.js.map"
+        "/assets/js/router/router-0a7d6f2f08a8fd756cf8.js.map"
       ]
     },
     "todotas": {
       "js": [
-        "/assets/js/todotas-f4afbcb3b363bf635361.js"
+        "/assets/js/todotas-70cab9e01421051136f3.js"
       ],
       "js.map": [
-        "/assets/js/todotas-f4afbcb3b363bf635361.js.map"
+        "/assets/js/todotas-70cab9e01421051136f3.js.map"
       ]
     }
   },
@@ -119,8 +119,8 @@
   "hello_vue.js.map": "/assets/js/hello_vue-0446471c4b0f01a33046.js.map",
   "media/fonts/element-icons.ttf": "/assets/media/fonts/element-icons-45201881.ttf",
   "media/fonts/element-icons.woff": "/assets/media/fonts/element-icons-313f7dac.woff",
-  "router/router.js": "/assets/js/router/router-7fe587ee7b023eef0d55.js",
-  "router/router.js.map": "/assets/js/router/router-7fe587ee7b023eef0d55.js.map",
-  "todotas.js": "/assets/js/todotas-f4afbcb3b363bf635361.js",
-  "todotas.js.map": "/assets/js/todotas-f4afbcb3b363bf635361.js.map"
+  "router/router.js": "/assets/js/router/router-0a7d6f2f08a8fd756cf8.js",
+  "router/router.js.map": "/assets/js/router/router-0a7d6f2f08a8fd756cf8.js.map",
+  "todotas.js": "/assets/js/todotas-70cab9e01421051136f3.js",
+  "todotas.js.map": "/assets/js/todotas-70cab9e01421051136f3.js.map"
 }
