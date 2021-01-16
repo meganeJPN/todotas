@@ -12,13 +12,14 @@
         label-position="top"
       >
         <el-form-item label="name">
-          <el-input v-model="form.name" maxlength="100" show-word-limit></el-input>
+          <el-input id="name" v-model="form.name" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Email">
-          <el-input v-model="form.email" maxlength="100" show-word-limit></el-input>
+          <el-input id="email" v-model="form.email" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Password" prop="pass">
           <el-input
+            id ="password"
             type="password"
             v-model="form.password"
             show-password
@@ -27,13 +28,14 @@
         </el-form-item>
         <el-form-item label="Confirm Password" prop="confirm_password">
           <el-input
+            id="confirm_password"
             type="password"
             v-model="form.confirm_password"
             autocomplete="off"
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="edit('form')"
+          <el-button id="update" style="float: right" type="primary" @click="edit('form')"
             >更新</el-button
           >
         </el-form-item>
@@ -150,6 +152,10 @@ export default {
             client: localStorage.getItem('client'),
           },
       }).then((response)=>{
+        localStorage.setItem('access-token', response.headers['access-token'])
+        localStorage.setItem('client', response.headers.client)
+        localStorage.setItem('uid', response.headers.uid)
+        localStorage.setItem('token-type', response.headers['token-type'])
         this.$router.push('/users/account') 
       },
       (error) => {

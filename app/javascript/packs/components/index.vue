@@ -1,11 +1,9 @@
 <template>
   <div class = "main">
      <el-header style="text-align: right; font-size: 12px">
-    <el-dropdown>
-      <i class="el-icon-menu" style="margin-right: 15px"></i>
+    <el-dropdown  trigger="click">
+      <i class="el-icon-menu" id ="menu" style="margin-right: 15px"></i>
       <el-dropdown-menu slot="dropdown">
-        
-
         <el-dropdown-item
           ><router-link to="/users/account">ユーザー情報</router-link></el-dropdown-item
         >
@@ -25,6 +23,7 @@
       </el-dropdown-menu>
     </el-dropdown>
   </el-header>
+  <h2>タスク一覧</h2>
     <el-tabs type="border-card">
      <!-- 
      -----------------------------
