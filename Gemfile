@@ -51,6 +51,7 @@ gem 'listen', '>= 3.0.5', '< 3.2'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'spring'
   gem 'capistrano', '3.6.0' # capistranoのツール一式
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
@@ -58,6 +59,12 @@ group :development, :test do
   gem 'capistrano3-unicorn'
   gem 'ed25519'
   gem 'bcrypt_pbkdf'
+  gem 'rspec-rails'
+  gem 'spring-commands-rspec'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'launchy'
+
 end
 
 group :development do
@@ -74,7 +81,9 @@ group :test do
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'chromedriver-helper'
+  # gem 'chromedriver-helper'
+  gem 'webdrivers'
+  gem 'database_cleaner'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -10,14 +10,14 @@
         label-position="top"
       >
         <el-form-item label="ユーザー名">
-          <el-input v-model="form.name" readonly></el-input>
+          <el-input id="name" v-model="form.name" readonly></el-input>
         </el-form-item>
         <el-form-item label="EMAIL">
-          <el-input v-model="form.email" readonly></el-input>
+          <el-input id="email" v-model="form.email" readonly></el-input>
         </el-form-item>
         <el-form-item>
           <router-link to="/users/edit">
-          <el-button style="float: right" type="primary"
+          <el-button id="edit" style="float: right" type="primary"
             >ユーザー情報編集</el-button
           ></router-link>
         </el-form-item>

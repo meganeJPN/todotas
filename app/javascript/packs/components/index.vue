@@ -1,11 +1,9 @@
 <template>
   <div class = "main">
      <el-header style="text-align: right; font-size: 12px">
-    <el-dropdown>
-      <i class="el-icon-menu" style="margin-right: 15px"></i>
+    <el-dropdown  trigger="click">
+      <i class="el-icon-menu" id ="menu" style="margin-right: 15px"></i>
       <el-dropdown-menu slot="dropdown">
-        
-
         <el-dropdown-item
           ><router-link to="/users/account">ユーザー情報</router-link></el-dropdown-item
         >
@@ -25,6 +23,7 @@
       </el-dropdown-menu>
     </el-dropdown>
   </el-header>
+  <h2>タスク一覧</h2>
     <el-tabs type="border-card">
      <!-- 
      -----------------------------
@@ -39,6 +38,8 @@
         <el-table-column label="" width="50px">
             <template slot-scope="scope">
               <el-button
+                v-bind:id = "'done_'+scope.$index"
+                name = "scope.row.id"
                 v-if="tasks_not_assigned_nil.some(task => task.id === scope.row.id)"
                 type="default"
                 icon="el-icon-check"
@@ -180,6 +181,7 @@
         <el-table-column label="" width="80" height="30">
             <template slot-scope="scope">
               <el-button
+                v-bind:id="'assign_'+scope.$index"
                 type="primary"
                 icon="el-icon-plus"
                 size="mini"
@@ -201,6 +203,7 @@
     <el-footer style="text-align: right; font-size: 12px">
       <el-row
         ><el-button
+          id = "createTask"
           type="primary"
           icon="el-icon-edit"
           circle
@@ -223,6 +226,7 @@
       <el-form :model="form" :rules="rules" ref="form" label-position="top">
         <el-form-item label="タスク内容" :label-width="formLabelWidth" prop="content">
           <el-input
+            id="createTaskContent"
             v-model="form.content"
             autocomplete="off"
             maxlength="50"
@@ -232,6 +236,7 @@
         <el-form-item label="所要時間" :label-width="formLabelWidth" prop="duration">
           <div class="duration-slider">
             <el-slider
+            id="createTaskDuration"
               v-model="form.duration"
               :step="15"
               :marks="marks_duration"
@@ -243,6 +248,7 @@
         </el-form-item>
         <el-form-item label="メモ" :label-width="formLabelWidth" prop="comment">
           <el-input
+          id="createTaskComment"
             type="textarea"
             v-model="form.comment"
             autocomplete="off"
@@ -255,7 +261,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogCreateTaskVisible = false">閉じる</el-button>
-        <el-button type="primary" @click="createTask">作成</el-button>
+        <el-button id="createTaskCreate" type="primary" @click="createTask">作成</el-button>
       </span>
     </el-dialog>
 
@@ -274,6 +280,7 @@
       <el-form :model="form" :rules="rules" ref="form" label-position="top">
         <el-form-item label="タスク内容" :label-width="formLabelWidth" prop="content">
           <el-input
+            id="editTaskContent"
             v-model="form.content"
             autocomplete="off"
             maxlength="50"
@@ -283,6 +290,7 @@
         <el-form-item label="所要時間" :label-width="formLabelWidth" prop="duration">
           <div class="duration-slider">
             <el-slider
+              id="editTaskDuraton"
               v-model="form.duration"
               :step="15"
               :marks="marks_duration"
@@ -294,6 +302,7 @@
         </el-form-item>
         <el-form-item label="メモ" :label-width="formLabelWidth" prop="comment">
           <el-input
+            id="editTaskComment"
             type="textarea"
             v-model="form.comment"
             autocomplete="off"
@@ -328,7 +337,7 @@
       <el-form-item label="開始時間" :label-width="formLabelWidth" prop="start_time">
       <div>
         <el-radio-group v-model="form_schedule.start_time">
-          <el-radio-button v-for="time in time_span" :label="time" v-bind:key="time.id"></el-radio-button>
+          <el-radio-button v-bind:id="'id_'+time" v-for="time in time_span" :label="time" v-bind:key="time.id"></el-radio-button>
         </el-radio-group> 
       </div>
       </el-form-item>

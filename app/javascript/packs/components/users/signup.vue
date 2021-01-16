@@ -12,13 +12,14 @@
         label-position="top"
       >
         <el-form-item label="name">
-          <el-input v-model="form.name" maxlength="100" show-word-limit></el-input>
+          <el-input id="name" v-model="form.name" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Email">
-          <el-input v-model="form.email" maxlength="100" show-word-limit></el-input>
+          <el-input id="email" v-model="form.email" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="Password" prop="pass">
           <el-input
+            id="password"
             type="password"
             v-model="form.password"
             show-password
@@ -27,13 +28,14 @@
         </el-form-item>
         <el-form-item label="Confirm Password" prop="confirm_password">
           <el-input
+          id="confirm_password"
             type="password"
             v-model="form.confirm_password"
             autocomplete="off"
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="signUp('form')"
+          <el-button id="sign_up" style="float: right" type="primary" @click="signUp('form')"
             >Sign up</el-button
           >
         </el-form-item>
