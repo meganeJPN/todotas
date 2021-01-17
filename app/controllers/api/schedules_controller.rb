@@ -107,15 +107,6 @@ class Api::SchedulesController < ApplicationController
     end
   end
 
-  def not_found
-    render(status: 404)
-  end
-
-  def internal_server_error
-    render(status: 500)
-  end
-
-
   private
   def schedule_params
     params.fetch(:schedule, {}).permit(:start_date, :start_time, :end_time,:task_id)
