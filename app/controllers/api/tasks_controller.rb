@@ -58,6 +58,14 @@ class Api::TasksController < ApplicationController
     render :show, status: :ok if @task.destroy
   end
 
+  def not_found
+    render(status: 404)
+  end
+
+  def internal_server_error
+    render(status: 500)
+  end
+
   private
   def task_params
     params.fetch(:task, {}).permit(:content, :comment, :duration, :completed)
